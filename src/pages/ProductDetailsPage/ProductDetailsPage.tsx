@@ -5,21 +5,17 @@ import {
   Typography,
   Button,
   Rating,
-  Chip,
   Stack,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   ToggleButton,
   ToggleButtonGroup,
   IconButton,
-  Avatar,
   TextField,
-  InputAdornment,
   Divider,
   Tabs,
   Tab,
+  Drawer,
+  List,
+  ListItem,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
@@ -30,6 +26,8 @@ import product1Image from "../../assets/images/product1.jpg";
 import product2Image from "../../assets/images/product2.jpg";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import { ICart, ICartItem, IProduct } from "../../types/types";
+import CartDrawer from "../../components/CartDrawer/CartDrawer";
 
 const ProductDetailsPage = () => {
   const [selectedImage, setSelectedImage] = useState(product1Image);
@@ -38,8 +36,12 @@ const ProductDetailsPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("S");
   const [tabValue, setTabValue] = React.useState(0);
+  const [cartVisible, setCartVisible] = useState<boolean>(false);
+  const [cart, setCart] = useState<ICart>({ items: [], total: 0 });
+  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 
-  const product = {
+  const product: IProduct = {
+    id: 1,
     name: "Men Cap",
     rating: 4,
     reviewCount: 89,
@@ -50,14 +52,6 @@ const ProductDetailsPage = () => {
     images: [product1Image, product2Image],
     colors: ["#FF0000", "#00FF00", "#0000FF"],
     sizes: ["S", "M", "L", "XL"],
-  };
-
-  const handleQuantityChange = (type: "increase" | "decrease") => {
-    if (type === "increase") {
-      setQuantity(quantity + 1);
-    } else if (type === "decrease" && quantity > 1) {
-      setQuantity(quantity - 1);
-    }
   };
 
   const handleSizeChange = (
@@ -87,6 +81,45 @@ const ProductDetailsPage = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handleAddToCart = (product: IProduct) => {
+    setCartItems((prevItems) => {
+      // Check if the product is already in the cart
+      const productIndex = prevItems.findIndex(
+        (item) => item.product.id === product.id
+      );
+
+      if (productIndex > -1) {
+        // If it is, increment the quantity
+        const newItems = [...prevItems];
+        newItems[productIndex] = {
+          ...newItems[productIndex],
+          quantity: newItems[productIndex].quantity + 1,
+        };
+        console.log("Updated cart items: ", newItems); // Debug log
+        return newItems;
+      } else {
+        // If it's not, add the product with quantity 1
+        const newCartItem = { product, quantity: 1 };
+        console.log("New item added to cart: ", newCartItem); // Debug log
+        return [...prevItems, newCartItem];
+      }
+    });
+
+    setCartVisible(true); // Show the cart
+  };
+
+  const updateCartItemQuantity = (productId: number, newQuantity: number) => {
+    setCartItems((prevItems) => {
+      return prevItems
+        .map((item) =>
+          item.product.id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+        .filter((item) => item.quantity > 0); // Remove items with 0 quantity
+    });
   };
 
   return (
@@ -255,6 +288,7 @@ const ProductDetailsPage = () => {
           {/* Buttons */}
           <Stack direction="row" spacing={2} sx={{ my: 2 }}>
             <Button
+              onClick={() => handleAddToCart(product)}
               variant="outlined"
               startIcon={<ShoppingCartIcon />}
               sx={{ flexGrow: 1, borderColor: "black", color: "black" }}
@@ -314,6 +348,12 @@ const ProductDetailsPage = () => {
         </Box>
       </Box>
 
+      <CartDrawer
+        cartVisible={cartVisible}
+        setCartVisible={setCartVisible}
+        cartItems={cartItems}
+        updateCartItemQuantity={updateCartItemQuantity}
+      />
       <Footer />
     </>
   );
