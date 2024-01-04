@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage/HomePage"; // Adjust the import path as n
 import LoginPage from "./pages/LoginPage"; // Adjust the import path as necessary
 import SignUpPage from "./pages/SignUpPage"; // Adjust the import path as necessary
 import ProductDetailsPage from "./pages/ProductDetailsPage/ProductDetailsPage";
+import Checkout from "./pages/Checkout/Checkout";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/product/:productId" element={<ProductDetailsPage />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </Router>
   );

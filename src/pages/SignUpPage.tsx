@@ -14,7 +14,7 @@ import {
   Checkbox,
   Grid,
 } from "@mui/material";
-import backgroundImage from "../assets/images/background.jpg"; // Adjust the relative path as needed
+import backgroundImage from "../assets/images/background-image.jpg"; // Adjust the relative path as needed
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 

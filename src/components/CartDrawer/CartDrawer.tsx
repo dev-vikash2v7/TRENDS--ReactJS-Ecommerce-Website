@@ -17,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ICartItem } from "../../types/types";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useNavigate } from "react-router-dom";
 
 interface ICartDrawerProps {
   cartVisible: boolean;
@@ -39,9 +40,10 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     updateCartItemQuantity(productId, newQuantity);
   };
-
+  const navigate = useNavigate();
   const handleCheckout = () => {
     // Handle the checkout action
+    navigate(`/checkout`);
   };
 
   const totalPrice = cartItems.reduce(
