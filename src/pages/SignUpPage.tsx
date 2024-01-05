@@ -39,7 +39,7 @@ const SignUpPage: React.FC = () => {
             p: 4,
             borderRadius: 1,
             boxShadow: 5,
-            width: "100%",
+            width: "30%",
             maxWidth: "600px", // Adjust the width as needed
             display: "flex",
             flexDirection: "column",
