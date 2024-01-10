@@ -175,10 +175,7 @@ const ProductDetailsPage = () => {
             component="div"
             sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2, mb: 1 }}
           >
-            Color:{" "}
-            <Box component="span" sx={{ fontWeight: "bold" }}>
-              Pearl Pink
-            </Box>
+            Color: <Box component="span">Beige</Box>
           </Typography>
           <Box sx={{ display: "flex", gap: 1 }}>
             {product.colors.map((color) => (

@@ -199,12 +199,12 @@ const Checkout = () => {
                   <h3
                     style={{ fontSize: "1.4rem", fontWeight: 500, margin: 0 }}
                   >
-                    PURE COTTON HEAVYWEIGHT T-SHIRT
+                    Pure Cotton T-Shirt
                   </h3>
                   <small>Beige / XS</small>
                 </div>
 
-                <p style={{ fontSize: "1rem", margin: "8px 0" }}>$48.00</p>
+                {/* <p style={{ fontSize: "1rem", margin: "8px 0" }}>$48.00</p> */}
               </div>
 
               <div

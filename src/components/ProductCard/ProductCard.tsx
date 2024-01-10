@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Button
         variant="outlined"
         onClick={onAddToCart}
-        sx={{ width: "100%", mt: 1 }}
+        sx={{ width: "100%", mt: 1, color: "black", borderColor: "black" }}
       >
         ADD TO CART
       </Button>
