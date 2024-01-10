@@ -24,6 +24,8 @@ import ImageGallery from "../../components/ImageGallery/ImageGallery";
 import ZoomPopup from "../../components/ZoomPopup/ZoomPopup";
 import product1Image from "../../assets/images/product1.jpg";
 import product2Image from "../../assets/images/product2.jpg";
+import product24Image from "../../assets/images/product-2-4.jpg";
+import product26Image from "../../assets/images/product-2-6.jpg";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { ICart, ICartItem, IProduct } from "../../types/types";
@@ -42,15 +44,15 @@ const ProductDetailsPage = () => {
 
   const product: IProduct = {
     id: 1,
-    name: "Men Cap",
+    name: "Pure Cotton T-Shirt",
     rating: 4,
     reviewCount: 89,
-    price: 23.2,
-    originalPrice: 29.0,
+    price: 48.0,
+    originalPrice: 60.0,
     stock: 5,
     delivery: "2-3 Days",
-    images: [product1Image, product2Image],
-    colors: ["#FF0000", "#00FF00", "#0000FF"],
+    images: [product1Image, product24Image, product26Image],
+    colors: ["#f4ecc2"],
     sizes: ["S", "M", "L", "XL"],
   };
 
@@ -152,7 +154,13 @@ const ProductDetailsPage = () => {
               ${product.price.toFixed(2)}
             </Typography>
             <Typography sx={{ color: "text.secondary" }}>
-              Save 20% (${(product.originalPrice - product.price).toFixed(2)})
+              Save{" "}
+              {(
+                ((product.originalPrice - product.price) /
+                  product.originalPrice) *
+                100
+              ).toFixed(2)}
+              % (${(product.originalPrice - product.price).toFixed(2)})
             </Typography>
           </Box>
           <Typography variant="subtitle1">

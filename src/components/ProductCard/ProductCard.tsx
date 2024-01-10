@@ -38,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         component="div"
         sx={{ textAlign: "center", mt: 1 }}
       >
-        {title}
+        {title.charAt(0).toUpperCase() + title.slice(1).toLowerCase()}
       </Typography>
       <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "center" }}>
         ${price.toFixed(2)}

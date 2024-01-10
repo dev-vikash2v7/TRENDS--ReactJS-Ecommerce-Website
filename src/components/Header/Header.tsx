@@ -12,27 +12,27 @@ import { ShoppingCart, Search, AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
-  // Dummy count for cart items
   const cartItemCount = 0;
 
   return (
     <AppBar position="static" sx={{ background: "white", color: "black" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Typography
-          variant="h6"
-          noWrap
-          component={Link}
-          to="/"
-          sx={{
-            flexGrow: 1,
-            color: "black",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          ZÜREA
-        </Typography>
-        <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component={Link}
+            to="/"
+            sx={{
+              color: "black",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
+          >
+            ZÜREA
+          </Typography>
+        </Box>
+        <Box sx={{ flex: 2, display: 'flex', justifyContent: 'center' }}>
           <Button
             color="inherit"
             component={Link}
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
             More
           </Button>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
           <IconButton color="inherit" sx={{ color: "black" }}>
             <Search />
           </IconButton>
@@ -83,9 +83,6 @@ const Header: React.FC = () => {
               <ShoppingCart />
             </Badge>
           </IconButton>
-          <Typography variant="subtitle1" sx={{ marginLeft: 1 }}>
-            Cart - {cartItemCount}
-          </Typography>
         </Box>
       </Toolbar>
     </AppBar>

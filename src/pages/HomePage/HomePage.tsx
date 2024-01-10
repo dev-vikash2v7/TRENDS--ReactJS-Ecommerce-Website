@@ -17,6 +17,12 @@ import designerBagsImage from "../../assets/images/designer_bags.jpg";
 import trendySkirtsImage from "../../assets/images/trendy_skirts.jpg";
 import product1Image from "../../assets/images/product1.jpg";
 import product2Image from "../../assets/images/product2.jpg";
+import blackImage from "../../assets/images/black.jpg";
+import lastImage from "../../assets/images/last.jpg";
+import product5Image from "../../assets/images/product-5.jpg";
+import product6Image from "../../assets/images/product-6.jpg";
+import product7Image from "../../assets/images/product-7.jpg";
+import product8Image from "../../assets/images/product-8.jpg";
 import Slider, { CustomArrowProps } from "react-slick";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { useNavigate } from "react-router-dom";
@@ -59,16 +65,55 @@ const HomePage: React.FC = () => {
   ];
 
   const products = [
-    { id: 1, title: "Shirt 1", imageUrl: product1Image, price: 250.0 },
-    { id: 2, title: "Shirt 2", imageUrl: product2Image, price: 150.0 },
-    { id: 3, title: "Shirt 3", imageUrl: product1Image, price: 75.0 },
-    { id: 4, title: "Shirt 4", imageUrl: product1Image, price: 75.0 },
+    {
+      id: 1,
+      title: "PURE COTTON T-SHIRT",
+      imageUrl: product1Image,
+      price: 48.0,
+    },
+    {
+      id: 2,
+      title: "OVERSIZED TEE - PEARL PINK",
+      imageUrl: product2Image,
+      price: 40.0,
+    },
+    {
+      id: 3,
+      title: "OVERSIZED TEE - BLACK",
+      imageUrl: blackImage,
+      price: 59.0,
+    },
+    {
+      id: 4,
+      title: "LOOSE FIT CREW-NECK T-SHIRT",
+      imageUrl: lastImage,
+      price: 75.0,
+    },
 
-    { id: 5, title: "Shirt 1", imageUrl: product1Image, price: 250.0 },
-    { id: 6, title: "Shirt 2", imageUrl: product2Image, price: 150.0 },
-    { id: 7, title: "Shirt 3", imageUrl: product1Image, price: 75.0 },
-    { id: 8, title: "Shirt 4", imageUrl: product1Image, price: 75.0 },
-    // ... more products
+    {
+      id: 5,
+      title: "FULL-SLEEVE HOODED T-SHIRT",
+      imageUrl: product5Image,
+      price: 79.0,
+    },
+    {
+      id: 6,
+      title: "STYLISH FIT HOODIE FOR MEN",
+      imageUrl: product6Image,
+      price: 50.0,
+    },
+    {
+      id: 7,
+      title: "MEN FULL SLEEVE SWEATSHIRT",
+      imageUrl: product8Image,
+      price: 40.0,
+    },
+    {
+      id: 8,
+      title: "BONO - PLAIN MEN'S HOODIE",
+      imageUrl: product7Image,
+      price: 60.0,
+    },
   ];
 
   const specialTrendProducts = [
@@ -151,7 +196,7 @@ const HomePage: React.FC = () => {
                       component="img"
                       alt={banner.name}
                       image={banner.imageUrl}
-                      sx={{ height: "auto", width: "100%" }}
+                      sx={{ height: 350, width: "100%" }}
                     />
                   </CardActionArea>
                 </Card>
@@ -251,6 +296,7 @@ const HomePage: React.FC = () => {
             flexGrow: 1,
             maxWidth: "lg",
             mx: "auto",
+            marginBottom: 10,
           }}
         >
           <Grid container justifyContent="center" spacing={2}>
