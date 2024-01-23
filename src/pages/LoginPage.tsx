@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   Box,
   Container,
@@ -10,11 +10,35 @@ import {
 import backgroundImage from "../assets/images/background-image.jpg";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
 const LoginPage: React.FC = () => {
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    const userData = {
+      email: username,
+      password: password,
+    };
+    axios
+      .post(`${BASE_URL}/admin/login`, userData)
+      .then((response) => {
+        const { accessToken, refreshToken} = response.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
+      });
+  };
+
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Box
         sx={{
           backgroundImage: `url(${backgroundImage})`,
@@ -53,6 +77,7 @@ const LoginPage: React.FC = () => {
             autoComplete="email"
             autoFocus
             sx={{ mb: 1 }}
+            onChange={(e)=>setUsername(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -65,12 +90,14 @@ const LoginPage: React.FC = () => {
             id="password"
             autoComplete="current-password"
             sx={{ mb: 1 }}
+            onChange={(e)=>setPassword(e.target.value)}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            onClick={handleLogin}
           >
             Sign In
           </Button>
@@ -85,7 +112,7 @@ const LoginPage: React.FC = () => {
           </Typography>
         </Container>
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

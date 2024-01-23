@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {
   Box,
   Container,
@@ -17,11 +17,40 @@ import {
 import backgroundImage from "../assets/images/background-image.jpg"; // Adjust the relative path as needed
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
 const SignUpPage: React.FC = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleRegister = () => {
+    if (!email || !password) {
+      console.log("Please fill in all the fields.");
+      return;
+    }
+    const userData = {
+      email,
+      password,
+    };
+
+    axios
+      .post(`${BASE_URL}/admin/register`, userData)
+      .then((response) => {
+
+        console.log(response)
+        window.location.href = "/login";
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log("Failed to create an account. Please try again.");
+      });
+  };
+
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Box
         sx={{
           backgroundImage: `url(${backgroundImage})`,
@@ -95,6 +124,7 @@ const SignUpPage: React.FC = () => {
               name="email"
               autoComplete="email"
               sx={{ mb: 1 }}
+              onChange={(e)=>setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -106,6 +136,7 @@ const SignUpPage: React.FC = () => {
               id="password"
               autoComplete="new-password"
               sx={{ mb: 1 }}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -132,6 +163,7 @@ const SignUpPage: React.FC = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleRegister}
             >
               Save
             </Button>
@@ -145,7 +177,7 @@ const SignUpPage: React.FC = () => {
           </Box>
         </Container>
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

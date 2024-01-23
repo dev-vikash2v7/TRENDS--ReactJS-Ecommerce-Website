@@ -7,7 +7,20 @@ import ProductDetailsPage from "./pages/ProductDetailsPage/ProductDetailsPage";
 import Checkout from "./pages/Checkout/Checkout";
 
 const App: React.FC = () => {
-  return (
+
+  const accessToken = localStorage.getItem("accessToken")
+    if(!accessToken){
+      return (
+      <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="*" element={<LoginPage />}  />
+      </Routes>
+    </Router>
+      )
+    }
+    return(
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -17,7 +30,7 @@ const App: React.FC = () => {
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </Router>
-  );
+    )
 };
 
 export default App;
