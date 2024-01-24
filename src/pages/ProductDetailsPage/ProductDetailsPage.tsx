@@ -30,8 +30,9 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { ICart, ICartItem, IProduct } from "../../types/types";
 import CartDrawer from "../../components/CartDrawer/CartDrawer";
+import { useParams } from "react-router-dom";
 
-const ProductDetailsPage = () => {
+const ProductDetailsPage = ({products}:any) => {
   const [selectedImage, setSelectedImage] = useState(product1Image);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState("");
@@ -41,17 +42,23 @@ const ProductDetailsPage = () => {
   const [cartVisible, setCartVisible] = useState<boolean>(false);
   const [cart, setCart] = useState<ICart>({ items: [], total: 0 });
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+  
+  const { productId } = useParams<{ productId: string }>();
+  const numericProductId = productId ? parseInt(productId, 10) : undefined;
+  const showProduct = numericProductId !== undefined
+  ? products.find((p:any) => p.id === numericProductId)
+  : undefined;
 
   const product: IProduct = {
     id: 1,
-    name: "Pure Cotton T-Shirt",
+    name: showProduct.title,
     rating: 4,
     reviewCount: 89,
-    price: 48.0,
+    price: showProduct.price,
     originalPrice: 60.0,
     stock: 5,
     delivery: "2-3 Days",
-    images: [product1Image, product24Image, product26Image],
+    images: [showProduct.imageUrl, product24Image, product26Image],
     colors: ["#f4ecc2"],
     sizes: ["S", "M", "L", "XL"],
   };

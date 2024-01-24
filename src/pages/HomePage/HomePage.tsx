@@ -26,8 +26,21 @@ import product8Image from "../../assets/images/product-8.jpg";
 import Slider, { CustomArrowProps } from "react-slick";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProductDetailsPage from "../ProductDetailsPage/ProductDetailsPage";
+import { Link } from 'react-router-dom';
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  products: {
+    id: number;
+    title: string;
+    imageUrl: string;
+    price: number;
+  }[];
+}
+
+
+const HomePage: React.FC<HomePageProps> = ({ products }) => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   // Carousel settings
@@ -64,57 +77,57 @@ const HomePage: React.FC = () => {
     { id: 3, name: "Casual Shoes", imageUrl: casualShoesImage, label: "Hot" },
   ];
 
-  const products = [
-    {
-      id: 1,
-      title: "PURE COTTON T-SHIRT",
-      imageUrl: product1Image,
-      price: 48.0,
-    },
-    {
-      id: 2,
-      title: "OVERSIZED TEE - PEARL PINK",
-      imageUrl: product2Image,
-      price: 40.0,
-    },
-    {
-      id: 3,
-      title: "OVERSIZED TEE - BLACK",
-      imageUrl: blackImage,
-      price: 59.0,
-    },
-    {
-      id: 4,
-      title: "LOOSE FIT CREW-NECK T-SHIRT",
-      imageUrl: lastImage,
-      price: 75.0,
-    },
+  // const products = [
+  //   {
+  //     id: 1,
+  //     title: "PURE COTTON T-SHIRT",
+  //     imageUrl: product1Image,
+  //     price: 48.0,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "OVERSIZED TEE - PEARL PINK",
+  //     imageUrl: product2Image,
+  //     price: 40.0,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "OVERSIZED TEE - BLACK",
+  //     imageUrl: blackImage,
+  //     price: 59.0,
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "LOOSE FIT CREW-NECK T-SHIRT",
+  //     imageUrl: lastImage,
+  //     price: 75.0,
+  //   },
 
-    {
-      id: 5,
-      title: "FULL-SLEEVE HOODED T-SHIRT",
-      imageUrl: product5Image,
-      price: 79.0,
-    },
-    {
-      id: 6,
-      title: "STYLISH FIT HOODIE FOR MEN",
-      imageUrl: product6Image,
-      price: 50.0,
-    },
-    {
-      id: 7,
-      title: "MEN FULL SLEEVE SWEATSHIRT",
-      imageUrl: product8Image,
-      price: 40.0,
-    },
-    {
-      id: 8,
-      title: "BONO - PLAIN MEN'S HOODIE",
-      imageUrl: product7Image,
-      price: 60.0,
-    },
-  ];
+  //   {
+  //     id: 5,
+  //     title: "FULL-SLEEVE HOODED T-SHIRT",
+  //     imageUrl: product5Image,
+  //     price: 79.0,
+  //   },
+  //   {
+  //     id: 6,
+  //     title: "STYLISH FIT HOODIE FOR MEN",
+  //     imageUrl: product6Image,
+  //     price: 50.0,
+  //   },
+  //   {
+  //     id: 7,
+  //     title: "MEN FULL SLEEVE SWEATSHIRT",
+  //     imageUrl: product8Image,
+  //     price: 40.0,
+  //   },
+  //   {
+  //     id: 8,
+  //     title: "BONO - PLAIN MEN'S HOODIE",
+  //     imageUrl: product7Image,
+  //     price: 60.0,
+  //   },
+  // ];
 
   const specialTrendProducts = [
     { id: 1, title: "Shirt 1", imageUrl: product1Image, price: 250.0 },
@@ -224,7 +237,7 @@ const HomePage: React.FC = () => {
             <Tab label="Best Products" sx={tabStyle(selectedTab === 2)} />
           </Tabs>
         </Box>
-
+        
         <Box
           sx={{
             flexGrow: 1,
@@ -233,7 +246,7 @@ const HomePage: React.FC = () => {
           }}
         >
           <Grid container justifyContent="center" spacing={2}>
-            {products.map((product, index) => (
+            {products.map((product:any, index:number) => (
               <Grid
                 item
                 key={product.id}
@@ -243,15 +256,15 @@ const HomePage: React.FC = () => {
                 lg={3}
                 onClick={() => navigateToProductDetails(product.id)}
               >
-                <ProductCard
-                  imageUrl={product.imageUrl}
-                  title={product.title}
-                  price={product.price}
-                  onAddToCart={() => handleAddToCart(product.id)}
-                />
+              <ProductCard
+                imageUrl={product.imageUrl}
+                title={product.title}
+                price={product.price}
+                onAddToCart={() => handleAddToCart(product.id)}
+              />
               </Grid>
             ))}
-          </Grid>
+          </Grid>   
           <Box sx={{ marginTop: 6, marginBottom: 6, marginRight: 7 }}>
             <Grid container spacing={4} justifyContent="center">
               {banners2.map((banner, index) => (
