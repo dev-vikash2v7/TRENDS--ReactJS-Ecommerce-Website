@@ -14,7 +14,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   title,
   price,
   onAddToCart,
-}) => {
+} : ProductCardProps) => {
   return (
     <Box sx={{ maxWidth: 210, m: 1 }}>
       <Box
