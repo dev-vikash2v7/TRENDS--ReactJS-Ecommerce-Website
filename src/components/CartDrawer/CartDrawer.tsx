@@ -64,7 +64,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
     // console.log('mergeITems=>',mergedCartItems)
     // console.log("cartupdateitem",cartItemApi)
 
-    console.log('items ' , response.data)
+    console.log('items ---' , response.data)
     setCartItemApi(response.data)
   })
   .catch(error => {

@@ -44,6 +44,7 @@ const ProductDetailsPage = ({products}:any) => {
   const [tabValue, setTabValue] = React.useState(0);
   const [cartVisible, setCartVisible] = useState<boolean>(false);
   const [cart, setCart] = useState<ICart>({ items: [], total: 0 });
+
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   
   const { productId } = useParams<{ productId: string }>();
@@ -112,34 +113,36 @@ const ProductDetailsPage = ({products}:any) => {
     }
     )
     .then((res)=>{
-      console.log('cart ' , res.data.products)
+      console.log('cart --- ' , res.data.products)
+
+      // setCartItems((prevItems) => {
+      //   // Check if the product is already in the cart
+      //   const productIndex = prevItems.findIndex(
+      //     (item) => item.product.id === product.id
+      //   );
+  
+      //   if (productIndex > -1) {
+      //     // If it is, increment the quantity
+      //     const newItems = [...prevItems];
+      //     newItems[productIndex] = {
+      //       ...newItems[productIndex],
+      //       quantity: newItems[productIndex].quantity + 1,
+      //     };
+      //     console.log("Updated cart items: ", newItems); // Debug log
+      //     return newItems;
+      //   } else {
+      //     // If it's not, add the product with quantity 1
+      //     const newCartItem = { product, quantity: 1 };
+      //     console.log("New item added to cart: ", newCartItem); // Debug log
+      //     return [...prevItems, newCartItem];
+      //   }
+      // });
+  
+      // setCartItems(res.data.products)
+      setCartVisible(true); // Show the cart
     }) 
     .catch(err=>console.log(err))
 
-    setCartItems((prevItems) => {
-      // Check if the product is already in the cart
-      const productIndex = prevItems.findIndex(
-        (item) => item.product.id === product.id
-      );
-
-      if (productIndex > -1) {
-        // If it is, increment the quantity
-        const newItems = [...prevItems];
-        newItems[productIndex] = {
-          ...newItems[productIndex],
-          quantity: newItems[productIndex].quantity + 1,
-        };
-        console.log("Updated cart items: ", newItems); // Debug log
-        return newItems;
-      } else {
-        // If it's not, add the product with quantity 1
-        const newCartItem = { product, quantity: 1 };
-        console.log("New item added to cart: ", newCartItem); // Debug log
-        return [...prevItems, newCartItem];
-      }
-    });
-
-    setCartVisible(true); // Show the cart
   };
 
   const updateCartItemQuantity = (productId: number, newQuantity: number) => {
