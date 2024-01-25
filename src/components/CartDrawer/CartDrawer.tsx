@@ -18,6 +18,10 @@ import { ICartItem } from "../../types/types";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios"
+import { BASE_URL } from "../../config";
+import demoImage from "../../assets/images/product-2-6.jpg"
 
 interface ICartDrawerProps {
   cartVisible: boolean;
@@ -25,6 +29,12 @@ interface ICartDrawerProps {
   cartItems: ICartItem[];
   updateCartItemQuantity: (productId: number, quantity: number) => void;
 }
+interface IcartUpatedItem{
+  id: number;
+  price: number;
+  name: string;
+}
+
 
 const CartDrawer: React.FC<ICartDrawerProps> = ({
   cartVisible,
@@ -32,6 +42,26 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
   cartItems,
   updateCartItemQuantity,
 }) => {
+
+  const [cartItemApi, setCartItemApi] = useState<IcartUpatedItem[]>([]);
+
+   useEffect(()=>{
+    axios.get(`${BASE_URL}/product/getUserCart?userId=65b0f39435d3e5adf27cbf27`)
+  .then(response => {
+    // Handle the successful response her
+    // const newItems: any = [...cartItems.product]
+    console.log(cartItems)
+    const newItem = cartItems.map((item:any)=>item.product)
+    const mergedCartItems:any = [...newItem,...response.data.cartProducts];
+    setCartItemApi(mergedCartItems)
+    console.log('mergeITems=>',mergedCartItems)
+    console.log("cartupdateitem",cartItemApi)
+  })
+  .catch(error => {
+    // Handle errors here
+    console.error('Error:', error);
+  });
+   },[cartItems])
   const imageSize = {
     width: 100,
     height: 100,
