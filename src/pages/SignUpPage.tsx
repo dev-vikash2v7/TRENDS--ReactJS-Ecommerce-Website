@@ -34,7 +34,7 @@ const SignUpPage: React.FC = () => {
     };
 
     axios
-      .post(`${BASE_URL}/admin/register`, userData)
+      .post(`${BASE_URL}/user/register`, userData)
       .then((response) => {
 
         window.location.href = "/login";

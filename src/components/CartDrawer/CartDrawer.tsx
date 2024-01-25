@@ -22,6 +22,8 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import { BASE_URL } from "../../config";
 import demoImage from "../../assets/images/product-2-6.jpg"
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 
 interface ICartDrawerProps {
   cartVisible: boolean;
@@ -32,7 +34,9 @@ interface ICartDrawerProps {
 interface IcartUpatedItem{
   id: number;
   price: number;
+  quantity: number;
   name: string;
+  images : string
 }
 
 
@@ -45,23 +49,31 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
 
   const [cartItemApi, setCartItemApi] = useState<IcartUpatedItem[]>([]);
 
+  
+  const userId  = localStorage.getItem('userId')
+
    useEffect(()=>{
-    axios.get(`${BASE_URL}/cart/getUserCart?userId=65b0f39435d3e5adf27cbf27`)
+
+    axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
   .then(response => {
 
-    const newItem = cartItems.map((item:any)=>item.product)
+    // const newItem = cartItems.map((item:any)=>item.product)
 
-    const mergedCartItems:any = [...newItem,...response.data.products];
+    // const mergedCartItems:any = [...newItem,...response.data.products];
 
-    setCartItemApi(mergedCartItems)
-    console.log('mergeITems=>',mergedCartItems)
-    console.log("cartupdateitem",cartItemApi)
+    // console.log('mergeITems=>',mergedCartItems)
+    // console.log("cartupdateitem",cartItemApi)
+
+    console.log('items ' , response.data)
+    setCartItemApi(response.data)
   })
   .catch(error => {
     // Handle errors here
     console.error('Error:', error);
   });
+
    },[cartItems])
+
   const imageSize = {
     width: 100,
     height: 100,
@@ -109,12 +121,12 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
         <Divider sx={{ mb: 2 }} />
         <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
           <List>
-            {cartItems.map((item) => (
-              <ListItem key={item.product.id}>
+            {cartItemApi.map((item) => (
+              <ListItem key={item.id}>
                 <CardMedia
                   component="img"
-                  image={item.product.images[0]}
-                  alt={item.product.name}
+                  image={item?.images}
+                  alt={item.name}
                   sx={{
                     width: imageSize.width,
                     height: imageSize.height,
@@ -124,16 +136,16 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
                 />
                 <Box sx={{ ml: 2, flex: 1 }}>
                   <Typography variant="subtitle1">
-                    {item.product.name}
+                    {item.name}
                   </Typography>
                   <Typography variant="body2">
-                    Price: ${item.product.price.toFixed(2)}
+                    Price: ${item.price.toFixed(2)}
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
                     <IconButton
                       size="small"
                       onClick={() =>
-                        handleQuantityChange(item.product.id, item.quantity - 1)
+                        handleQuantityChange(item.id, item.quantity - 1)
                       }
                     >
                       <RemoveIcon />
@@ -143,7 +155,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
                       value={item.quantity}
                       onChange={(e) =>
                         handleQuantityChange(
-                          item.product.id,
+                          item.id,
                           parseInt(e.target.value)
                         )
                       }
@@ -153,7 +165,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
                     <IconButton
                       size="small"
                       onClick={() =>
-                        handleQuantityChange(item.product.id, item.quantity + 1)
+                        handleQuantityChange(item.id, item.quantity + 1)
                       }
                     >
                       <AddIcon />

@@ -1,5 +1,5 @@
 // ProductDetailsPage.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -31,6 +31,9 @@ import Footer from "../../components/Footer/Footer";
 import { ICart, ICartItem, IProduct } from "../../types/types";
 import CartDrawer from "../../components/CartDrawer/CartDrawer";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../config";
+
 
 const ProductDetailsPage = ({products}:any) => {
   const [selectedImage, setSelectedImage] = useState(product1Image);
@@ -48,6 +51,9 @@ const ProductDetailsPage = ({products}:any) => {
   const showProduct = numericProductId !== undefined
   ? products.find((p:any) => p.id === numericProductId)
   : undefined;
+
+  const userId  = localStorage.getItem('userId')
+
 
   const product: IProduct = {
     id: 1,
@@ -93,6 +99,23 @@ const ProductDetailsPage = ({products}:any) => {
   };
 
   const handleAddToCart = (product: IProduct) => {
+
+    axios
+    .post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`, 
+    {
+      "product" :  {
+         "productId": product.id,
+         "name": product.name,
+          "price": product.price,
+          "quantity": quantity
+        }
+    }
+    )
+    .then((res)=>{
+      console.log('cart ' , res.data.products)
+    }) 
+    .catch(err=>console.log(err))
+
     setCartItems((prevItems) => {
       // Check if the product is already in the cart
       const productIndex = prevItems.findIndex(

@@ -8,27 +8,39 @@ import {
   Link,
 } from "@mui/material";
 import backgroundImage from "../assets/images/background-image.jpg";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
 import axios from "axios";
 import { BASE_URL } from "../config";
+import { useDispatch } from "react-redux";
+import { setUser } from "../Redux/Slices/user.slice";
 
 const LoginPage: React.FC = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch()
 
   const handleLogin = () => {
+
     const userData = {
       email: username,
       password: password,
     };
-    axios
-      .post(`${BASE_URL}/usrt/login`, userData)
+
+
+    axios.post(`${BASE_URL}/user/login`, userData)
       .then((response) => {
-        const { accessToken, refreshToken} = response.data;
+
+
+        dispatch(setUser({userId :  response.data.userDetails._id , email : response.data.userDetails.email  } ))
+
+        const { accessToken, refreshToken ,userDetails} = response.data;
+
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("userId", userDetails._id);
+        localStorage.setItem("email", userDetails.email);
+
+
         window.location.href = "/";
       })
       .catch((error) => {
