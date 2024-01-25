@@ -68,66 +68,11 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
 
   const banners2 = [
     { id: 1, name: "Designer Bags", imageUrl: designerBagsImage, label: "New" },
-    // {
-    //   id: 2,
-    //   name: "Branded Watch",
-    //   imageUrl: brandedWatchImage,
-    //   label: "Sale",
-    // },
+ 
     { id: 3, name: "Casual Shoes", imageUrl: casualShoesImage, label: "Hot" },
   ];
 
-  // const products = [
-  //   {
-  //     id: 1,
-  //     title: "PURE COTTON T-SHIRT",
-  //     imageUrl: product1Image,
-  //     price: 48.0,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "OVERSIZED TEE - PEARL PINK",
-  //     imageUrl: product2Image,
-  //     price: 40.0,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "OVERSIZED TEE - BLACK",
-  //     imageUrl: blackImage,
-  //     price: 59.0,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "LOOSE FIT CREW-NECK T-SHIRT",
-  //     imageUrl: lastImage,
-  //     price: 75.0,
-  //   },
-
-  //   {
-  //     id: 5,
-  //     title: "FULL-SLEEVE HOODED T-SHIRT",
-  //     imageUrl: product5Image,
-  //     price: 79.0,
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "STYLISH FIT HOODIE FOR MEN",
-  //     imageUrl: product6Image,
-  //     price: 50.0,
-  //   },
-  //   {
-  //     id: 7,
-  //     title: "MEN FULL SLEEVE SWEATSHIRT",
-  //     imageUrl: product8Image,
-  //     price: 40.0,
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "BONO - PLAIN MEN'S HOODIE",
-  //     imageUrl: product7Image,
-  //     price: 60.0,
-  //   },
-  // ];
+  
 
   const specialTrendProducts = [
     { id: 1, title: "Shirt 1", imageUrl: product1Image, price: 250.0 },

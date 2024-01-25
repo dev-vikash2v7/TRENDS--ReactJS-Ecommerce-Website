@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
       password: password,
     };
     axios
-      .post(`${BASE_URL}/admin/login`, userData)
+      .post(`${BASE_URL}/usrt/login`, userData)
       .then((response) => {
         const { accessToken, refreshToken} = response.data;
         localStorage.setItem("accessToken", accessToken);

@@ -46,13 +46,13 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
   const [cartItemApi, setCartItemApi] = useState<IcartUpatedItem[]>([]);
 
    useEffect(()=>{
-    axios.get(`${BASE_URL}/product/getUserCart?userId=65b0f39435d3e5adf27cbf27`)
+    axios.get(`${BASE_URL}/cart/getUserCart?userId=65b0f39435d3e5adf27cbf27`)
   .then(response => {
-    // Handle the successful response her
-    // const newItems: any = [...cartItems.product]
-    console.log(cartItems)
+
     const newItem = cartItems.map((item:any)=>item.product)
-    const mergedCartItems:any = [...newItem,...response.data.cartProducts];
+
+    const mergedCartItems:any = [...newItem,...response.data.products];
+
     setCartItemApi(mergedCartItems)
     console.log('mergeITems=>',mergedCartItems)
     console.log("cartupdateitem",cartItemApi)

@@ -15,8 +15,6 @@ import {
   Grid,
 } from "@mui/material";
 import backgroundImage from "../assets/images/background-image.jpg"; // Adjust the relative path as needed
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
 import axios from "axios";
 import { BASE_URL } from "../config";
 
@@ -39,7 +37,6 @@ const SignUpPage: React.FC = () => {
       .post(`${BASE_URL}/admin/register`, userData)
       .then((response) => {
 
-        console.log(response)
         window.location.href = "/login";
       })
       .catch((error) => {
