@@ -6,50 +6,34 @@ import {
   } from "@mui/material";
 
 
-// interface CheckFormElementProps {
-//   // Add any props if needed
-// }
-
-
-// const ClientSecret  = {
-//      clientSecret : string | undefined  ,
-//      error : string | undefined 
-// }
-
-// interface IFetchPaymentIntentClientSecret  {
-//     () : Promise<{ 
-//            clientSecret : string | undefined  ,
-//            error : string | undefined }
-//             | undefined> 
-//   } 
-
 const CheckFormElement = () => {
 
   const stripe = useStripe();
   const elements = useElements();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState('');
   
 
 
   
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
+ const afterPayment = () => {
 
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
+    
+    // console.log('cs' , clientSecret)
 
     if (!clientSecret) {
       return;
     }
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+
+    stripe?.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
@@ -59,13 +43,23 @@ const CheckFormElement = () => {
           break;
         case "requires_payment_method":
           setMessage("Your payment was not successful, please try again.");
+          setError(true)
+
           break;
         default:
           setMessage("Something went wrong.");
+          setError(true)
+
           break;
       }
     });
-  }, [stripe]);
+ };
+
+  
+useEffect(() => {
+  afterPayment()
+ },[stripe]);
+
 
 
 
@@ -81,55 +75,64 @@ const CheckFormElement = () => {
     }
 
     setIsLoading(true);
-    setError('');
+    setError(false);
+    setMessage('');
 
     const { error } = await stripe.confirmPayment({
       elements,
+
       confirmParams: {
-        // Make sure to change this to your payment completion page
+
         return_url: "http://localhost:3000",
+
+        payment_method_data: {
+          billing_details: {
+            name : 'vikash verma',
+            phone : '8269700955',
+            email : 'vikashvermacom92@gmail.com',
+            address:{
+              city : 'Bhopal',
+              country : 'US',
+              line1 : 'd15 patel nagar',
+              line2 : '462022',
+              state : 'MP'
+            }
+          },
+        },
       },
+    
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
+    console.log('error83 ' , error)
 
-    console.log(error)
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setError(error.message);
-    } else {
-      setError("An unexpected error occurred.");
-    }
+if(error ){
+    setMessage(error.message);
+    setIsLoading(false);
+    setError(true)
+    return
+  }
 
     setIsLoading(false);
   };
-
-  const paymentElementOptions = {
-    layout: "tabs"
-  }
 
 
   return (
     <form >
       <p className="text-black mb-4">Complete your payment here!</p>
 
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
+      <PaymentElement id="payment-element" options={ { layout: "tabs"}} />
 
       <Button
             variant="contained"
             fullWidth
-            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } , marginTop : '30px' ,marginBottom : '50px' }}
+            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } , marginTop : '30px' ,marginBottom : '20px' }}
             disabled={isLoading || !stripe || !elements}
             onClick={handleSubmit}
           >
              {isLoading ? "Loading..." : "Confirm Payment"}
           </Button>
 
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {message && <div id="payment-message">{message}</div>}
+          {message && <div id="payment-message" style={{color : error ? 'red' : 'green' , fontWeight :'600' , fontSize : '20px'}}>{message}</div>}
     </form>
   );
 };

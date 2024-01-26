@@ -212,7 +212,7 @@ const Checkout = () => {
 
           {/* <CheckoutForm /> */}
    {    clientSecret && <Elements options={options} stripe={stripePromise}>
-            <CheckFormElement />
+            <CheckFormElement clientSecret = {clientSecret}/>
           </Elements>}
           {/* </Elements> */}
   

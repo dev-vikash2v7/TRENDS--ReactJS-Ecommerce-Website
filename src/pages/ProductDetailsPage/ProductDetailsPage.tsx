@@ -46,6 +46,7 @@ const ProductDetailsPage = ({products}:any) => {
   const [cart, setCart] = useState<ICart>({ items: [], total: 0 });
 
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+  const [isAdded, setIsAdded] = useState<boolean>(false);
   
   const { productId } = useParams<{ productId: string }>();
   const numericProductId = productId ? parseInt(productId, 10) : undefined;
@@ -57,7 +58,7 @@ const ProductDetailsPage = ({products}:any) => {
 
 
   const product: IProduct = {
-    id: 1,
+    id: '65b0f7828e640ffac81f3e99',
     name: showProduct.title,
     rating: 4,
     reviewCount: 89,
@@ -99,10 +100,36 @@ const ProductDetailsPage = ({products}:any) => {
     setTabValue(newValue);
   };
 
+
+  useEffect(()=>{
+
+    axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
+  .then(response => {
+
+    response.data.map((item : any) =>{
+      console.log(item.productId)
+
+        if(item.productId == product.id){
+          setIsAdded(true)
+          return
+        }
+    })
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+   },[])
+
+
   const handleAddToCart = (product: IProduct) => {
 
-    axios
-    .post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`, 
+    if(isAdded ){
+      setCartVisible(true);
+      return 
+    }
+    try {
+    axios.post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`, 
     {
       "product" :  {
          "productId": product.id,
@@ -113,39 +140,21 @@ const ProductDetailsPage = ({products}:any) => {
     }
     )
     .then((res)=>{
-      console.log('cart --- ' , res.data.products)
-
-      // setCartItems((prevItems) => {
-      //   // Check if the product is already in the cart
-      //   const productIndex = prevItems.findIndex(
-      //     (item) => item.product.id === product.id
-      //   );
-  
-      //   if (productIndex > -1) {
-      //     // If it is, increment the quantity
-      //     const newItems = [...prevItems];
-      //     newItems[productIndex] = {
-      //       ...newItems[productIndex],
-      //       quantity: newItems[productIndex].quantity + 1,
-      //     };
-      //     console.log("Updated cart items: ", newItems); // Debug log
-      //     return newItems;
-      //   } else {
-      //     // If it's not, add the product with quantity 1
-      //     const newCartItem = { product, quantity: 1 };
-      //     console.log("New item added to cart: ", newCartItem); // Debug log
-      //     return [...prevItems, newCartItem];
-      //   }
-      // });
-  
-      // setCartItems(res.data.products)
-      setCartVisible(true); // Show the cart
+      setCartVisible(true); 
     }) 
-    .catch(err=>console.log(err))
+    .catch(err=>{
+      alert(err.message)
+    })
+  }
+  catch(err:any){
+    alert(err.message)
+  }
+
+
 
   };
 
-  const updateCartItemQuantity = (productId: number, newQuantity: number) => {
+  const updateCartItemQuantity = (productId: string, newQuantity: number) => {
     setCartItems((prevItems) => {
       return prevItems
         .map((item) =>
@@ -332,14 +341,16 @@ const ProductDetailsPage = ({products}:any) => {
 
           {/* Buttons */}
           <Stack direction="row" spacing={2} sx={{ my: 2 }}>
+            
             <Button
               onClick={() => handleAddToCart(product)}
               variant="outlined"
               startIcon={<ShoppingCartIcon />}
               sx={{ flexGrow: 1, borderColor: "black", color: "black" }}
             >
-              ADD TO CART
+             {!isAdded ? 'ADD TO CART' : 'Alraedy Added'}
             </Button>
+
             <Button
               variant="contained"
               sx={{ flexGrow: 1, bgcolor: "black", color: "white" }}

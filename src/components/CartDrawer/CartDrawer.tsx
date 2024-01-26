@@ -29,10 +29,10 @@ interface ICartDrawerProps {
   cartVisible: boolean;
   setCartVisible: (visible: boolean) => void;
   cartItems: ICartItem[];
-  updateCartItemQuantity: (productId: number, quantity: number) => void;
+  updateCartItemQuantity: (productId: string, quantity: number) => void;
 }
 interface IcartUpatedItem{
-  id: number;
+  id: string;
   price: number;
   quantity: number;
   name: string;
@@ -56,14 +56,6 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
 
     axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
   .then(response => {
-
-    // const newItem = cartItems.map((item:any)=>item.product)
-
-    // const mergedCartItems:any = [...newItem,...response.data.products];
-
-    // console.log('mergeITems=>',mergedCartItems)
-    // console.log("cartupdateitem",cartItemApi)
-
     console.log('items ---' , response.data)
     setCartItemApi(response.data)
   })
@@ -79,7 +71,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
     height: 100,
   };
 
-  const handleQuantityChange = (productId: number, newQuantity: number) => {
+  const handleQuantityChange = (productId: string, newQuantity: number) => {
     updateCartItemQuantity(productId, newQuantity);
   };
   const navigate = useNavigate();
@@ -88,8 +80,8 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
     navigate(`/checkout`);
   };
 
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.quantity * item.product.price,
+  const totalPrice = cartItemApi.reduce(
+    (acc, item) => acc + item.quantity * item.price,
     0
   );
 
@@ -121,7 +113,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
         <Divider sx={{ mb: 2 }} />
         <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
           <List>
-            {cartItemApi.map((item) => (
+            {cartItemApi && cartItemApi.map((item) => (
               <ListItem key={item.id}>
                 <CardMedia
                   component="img"
