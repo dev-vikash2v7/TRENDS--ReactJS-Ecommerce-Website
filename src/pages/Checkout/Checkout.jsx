@@ -15,12 +15,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { PaymentElement } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import CheckFormElement from "./CheckFormElement";
-
-// import stripePromise from "../../stripe";
 
 const stripePromise = loadStripe(
   "pk_test_51OcOelSJbNHwzu2iaWHv6Pyeqbt8rMJzFPjWtuSatm8FLnJQOs2GR1lql3A7OYyu1s7oMX9wYN76xp9ZE4gFw8L300fyK85med"
@@ -29,7 +26,6 @@ const stripePromise = loadStripe(
 const Checkout = () => {
 
   const [clientSecret , setClientSecret] = useState('')
-  const [loading, setLoading] = useState(true);
 
   const amount = 500;
   const currency = "usd"
@@ -38,20 +34,29 @@ const Checkout = () => {
     amount : amount,
     currency : currency
   }
+
   useEffect(()=>{
+
     axios.post(`${BASE_URL}/create-payment-intent`,data)
-    .then((res:any)=>{
-     console.log("scretKry===>",res.data.clientSecret)
+    .then((res)=>{
      setClientSecret(res.data.clientSecret)
-     setLoading(false)
    })
     .catch(err=>console.log(err))
+
+
   },[])
 
-  const options = {
-    // passing the client secret obtained from the server
-    clientSecret
+
+ const appearance = {
+    theme: 'stripe',
   };
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
+
+  
 
   return (
     <Container>
@@ -206,8 +211,8 @@ const Checkout = () => {
           />
 
           {/* <CheckoutForm /> */}
-   {    !loading &&  <Elements stripe={stripePromise} options={options}>
-            <CheckFormElement/>
+   {    clientSecret && <Elements options={options} stripe={stripePromise}>
+            <CheckFormElement />
           </Elements>}
           {/* </Elements> */}
   

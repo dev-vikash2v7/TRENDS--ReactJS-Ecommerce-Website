@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement, useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { BASE_URL } from "../../config";
 import {
     Button,
@@ -23,113 +23,113 @@ import {
 //             | undefined> 
 //   } 
 
-const CheckFormElement = (props) => {
+const CheckFormElement = () => {
 
   const stripe = useStripe();
   const elements = useElements();
 
-  const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [message, setMessage] = useState(null);
+  
+
 
   
-  const fetchPaymentIntentClientSecret  = async( ) => {
-    
-    try{
-  const res = await  fetch(BASE_URL + '/create-payment-intent', {
-    method : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        amount: 1000 ,
-        currency: 'inr',
-        gateway: 'card',
-      }),} )
-
-
-  const { clientSecret  , error}  = await res.json();
-
-  return { clientSecret  , error} 
+  useEffect(() => {
+    if (!stripe) {
+      return;
     }
 
-  catch(e ){
-      console.log( 'fetchPaymentIntentClientSecret Error : ' ,  e ) 
-      alert('Server Error '+  e.message)
-      setIsLoading(false);
-  }
-}
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      "payment_intent_client_secret"
+    );
+
+    if (!clientSecret) {
+      return;
+    }
+
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      switch (paymentIntent.status) {
+        case "succeeded":
+          setMessage("Payment succeeded!");
+          break;
+        case "processing":
+          setMessage("Your payment is processing.");
+          break;
+        case "requires_payment_method":
+          setMessage("Your payment was not successful, please try again.");
+          break;
+        default:
+          setMessage("Something went wrong.");
+          break;
+      }
+    });
+  }, [stripe]);
 
 
 
-async function load() {
-   if (!stripe) {
-     return;
-   }
-  
-const {clientSecret , error }   = await  fetchPaymentIntentClientSecret();
-
-if(error || !clientSecret){
-  console.log('USER ERROR  : ' , error)
-  alert('Unable to process payment ! Try Again')
-  setIsLoading(false)
-  return  
-}
-
-stripe?.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-  console.log('paite' , paymentIntent)
-  setMessage(
-    paymentIntent?.status === "succeeded"
-      ? "Your payment succeeded"
-      : "Unexpected error occurred"
-  );
-});
-}
-  // useEffect( () => {
-    
-
-  // load()
-
-  // }, [stripe]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    
     if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
     setIsLoading(true);
+    setError('');
 
-    load()
-    // const { results , error } = await stripe.confirmPayment({
-    //   elements,
-    // });
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Make sure to change this to your payment completion page
+        return_url: "http://localhost:3000",
+      },
+    });
 
-    // if (error && (error.type === "card_error" || error.type === "validation_error")) {
-    //     setMessage(error.message || "An error occurred during payment processing");
-    // }
-    // console.log('ddd' ,  results)
-    // console.log('ddd' , error )
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+
+    console.log(error)
+    if (error.type === "card_error" || error.type === "validation_error") {
+      setError(error.message);
+    } else {
+      setError("An unexpected error occurred.");
+    }
 
     setIsLoading(false);
   };
+
+  const paymentElementOptions = {
+    layout: "tabs"
+  }
 
 
   return (
     <form >
       <p className="text-black mb-4">Complete your payment here!</p>
-      <PaymentElement />
+
+      <PaymentElement id="payment-element" options={paymentElementOptions} />
+
       <Button
             variant="contained"
             fullWidth
-            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
+            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } , marginTop : '30px' ,marginBottom : '50px' }}
             disabled={isLoading || !stripe || !elements}
             onClick={handleSubmit}
           >
-             {isLoading ? "Loading..." : "Pay now"}
+             {isLoading ? "Loading..." : "Confirm Payment"}
           </Button>
-      {message && <div>{message}</div>}
+
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {message && <div id="payment-message">{message}</div>}
     </form>
   );
 };
