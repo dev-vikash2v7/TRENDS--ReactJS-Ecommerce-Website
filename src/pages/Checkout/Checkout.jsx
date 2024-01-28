@@ -18,25 +18,29 @@ import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import CheckFormElement from "./CheckFormElement";
+import { useSelector } from "react-redux";
 
 const stripePromise = loadStripe(
   "pk_test_51OcOelSJbNHwzu2iaWHv6Pyeqbt8rMJzFPjWtuSatm8FLnJQOs2GR1lql3A7OYyu1s7oMX9wYN76xp9ZE4gFw8L300fyK85med"
 );
 
-const Checkout = () => {
+
+const Checkout  = () => {
 
   const [clientSecret , setClientSecret] = useState('')
 
-  const amount = 500;
   const currency = "usd"
+
+  const {cartList , totalPrice} = useSelector(state => state.cart )
   
-  const data = {
-    amount : amount,
-    currency : currency
-  }
-
+  
   useEffect(()=>{
-
+    
+    const data = {
+      amount : totalPrice,
+      currency : currency
+    }
+    
     axios.post(`${BASE_URL}/create-payment-intent`,data)
     .then((res)=>{
      setClientSecret(res.data.clientSecret)
@@ -229,25 +233,30 @@ const Checkout = () => {
               padding: 26,
             }}
           >
+
+
             <div style={{ width: "50%" }}>
+
+          {cartList.map((item)=>{
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+
                 <img
                   src="https://cdn.shopify.com/s/files/1/0811/4713/4258/files/product-2_81c1b7c5-321b-4d77-ae0c-cdcb436bcbc9_64x64.png?v=1692248380"
                   alt="cart"
                   style={{ height: "100%" }}
                 />
 
-                <div>
-                  <h3
-                    style={{ fontSize: "1.4rem", fontWeight: 500, margin: 0 }}
-                  >
-                    Pure Cotton T-Shirt
-                  </h3>
-                  <small>Beige / XS</small>
-                </div>
+                  <div>
+                    <h3
+                      style={{ fontSize: "1.4rem", fontWeight: 500, margin: 0 }}
+                    >
+                      Pure Cotton T-Shirt
+                    </h3>
+                    <small>Beige / XS</small>
+                  </div>
 
-                {/* <p style={{ fontSize: "1rem", margin: "8px 0" }}>$48.00</p> */}
               </div>
+          })}
 
               <div
                 style={{
@@ -259,7 +268,7 @@ const Checkout = () => {
                 }}
               >
                 <p style={{ fontSize: "1rem", margin: "8px 0" }}>Subtotal</p>
-                <p style={{ fontSize: "1rem", margin: "8px 0" }}>$48.00</p>
+                <p style={{ fontSize: "1rem", margin: "8px 0" }}>$ {totalPrice}</p>
               </div>
 
               <div
@@ -288,7 +297,7 @@ const Checkout = () => {
               >
                 <p style={{ fontSize: "1.4rem" }}>Total</p>
                 <p style={{ fontSize: "1.4rem" }}>
-                  USD <span style={{ fontWeight: 500 }}>$48.00</span>
+                  USD <span style={{ fontWeight: 500 }}>${totalPrice}</span>
                 </p>
               </div>
             </div>

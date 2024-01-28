@@ -10,9 +10,12 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Search, AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { changeCartVisible } from "../../Redux/Slices/cart.slice";
 
 const Header: React.FC = () => {
   const cartItemCount = 0;
+  const dispatch = useDispatch()
 
   return (
     <AppBar position="static" sx={{ background: "white", color: "black" }}>
@@ -66,6 +69,7 @@ const Header: React.FC = () => {
             More
           </Button>
         </Box>
+        
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
           <IconButton color="inherit" sx={{ color: "black" }}>
             <Search />
@@ -76,12 +80,14 @@ const Header: React.FC = () => {
           <IconButton
             color="inherit"
             component={Link}
-            to="/cart"
+            to="#"
             sx={{ color: "black" }}
+            onClick={ ()=> dispatch(changeCartVisible())}
           >
             <Badge badgeContent={cartItemCount} color="secondary">
               <ShoppingCart />
             </Badge>
+
           </IconButton>
         </Box>
       </Toolbar>

@@ -22,15 +22,22 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import { BASE_URL } from "../../config";
 import demoImage from "../../assets/images/product-2-6.jpg"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
+import { json } from "stream/consumers";
+import { setCartList } from "../../Redux/Slices/cart.slice";
 
 interface ICartDrawerProps {
   cartVisible: boolean;
   setCartVisible: (visible: boolean) => void;
   cartItems: ICartItem[];
-  updateCartItemQuantity: (productId: string, quantity: number) => void;
+  updateCartItemQuantity: (productId: number, quantity: number) => void;
+  totalPrice : number
 }
+
+
+
+
 interface IcartUpatedItem{
   id: string;
   price: number;
@@ -45,45 +52,32 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
   setCartVisible,
   cartItems,
   updateCartItemQuantity,
+  totalPrice
 }) => {
-
-  const [cartItemApi, setCartItemApi] = useState<IcartUpatedItem[]>([]);
-
   
-  const userId  = localStorage.getItem('userId')
-
-   useEffect(()=>{
-
-    axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
-  .then(response => {
-    console.log('items ---' , response.data)
-    setCartItemApi(response.data)
-  })
-  .catch(error => {
-    // Handle errors here
-    console.error('Error:', error);
-  });
-
-   },[cartItems])
 
   const imageSize = {
     width: 100,
     height: 100,
   };
 
-  const handleQuantityChange = (productId: string, newQuantity: number) => {
+  const handleQuantityChange = (productId: number, newQuantity: number) => {
     updateCartItemQuantity(productId, newQuantity);
   };
+
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
   const handleCheckout = () => {
     // Handle the checkout action
-    navigate(`/checkout`);
+    // localStorage.setItem('amount' , totalPrice.toString())
+
+    dispatch(setCartList( {cartList : cartItems, totalPrice , cartVisible : false}))
+    navigate(`/checkout` );
+
   };
 
-  const totalPrice = cartItemApi.reduce(
-    (acc, item) => acc + item.quantity * item.price,
-    0
-  );
 
   return (
     <Drawer
@@ -113,11 +107,13 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
         <Divider sx={{ mb: 2 }} />
         <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
           <List>
-            {cartItemApi && cartItemApi.map((item) => (
+
+            {cartItems && cartItems?.map((item) => (
+
               <ListItem key={item.id}>
                 <CardMedia
                   component="img"
-                  image={item?.images}
+                  image={item.imageUrl}
                   alt={item.name}
                   sx={{
                     width: imageSize.width,
@@ -174,9 +170,11 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
           <Typography variant="subtitle1" gutterBottom>
             Estimated total
           </Typography>
+
           <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-            ${totalPrice.toFixed(2)} USD
+            {/* ${totalPrice.toFixed(2)} USD */}
           </Typography>
+
           <Typography variant="body2" sx={{ mb: 2 }}>
             Taxes, discounts, and shipping calculated at checkout
           </Typography>

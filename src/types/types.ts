@@ -1,5 +1,5 @@
 export interface IProduct {
-  id: string;
+  id: number;
   name: string;
   rating: number;
   reviewCount: number;
@@ -13,7 +13,11 @@ export interface IProduct {
 }
 
 export interface ICartItem {
-  product: IProduct;
+  // product: IProduct;
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
   quantity: number;
 }
 

@@ -84,6 +84,7 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
   const handleAddToCart = (productId: number) => {
     console.log(`Product ${productId} added to cart.`);
     // Implement add to cart functionality
+    
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {

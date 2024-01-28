@@ -1,5 +1,5 @@
 // ProductDetailsPage.tsx
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -36,6 +36,8 @@ import { BASE_URL } from "../../config";
 
 
 const ProductDetailsPage = ({products}:any) => {
+
+  
   const [selectedImage, setSelectedImage] = useState(product1Image);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState("");
@@ -43,22 +45,28 @@ const ProductDetailsPage = ({products}:any) => {
   const [selectedSize, setSelectedSize] = useState("S");
   const [tabValue, setTabValue] = React.useState(0);
   const [cartVisible, setCartVisible] = useState<boolean>(false);
+
   const [cart, setCart] = useState<ICart>({ items: [], total: 0 });
 
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   
   const { productId } = useParams<{ productId: string }>();
+
   const numericProductId = productId ? parseInt(productId, 10) : undefined;
+
+  
+  const [totalPrice , setTotalPrice]   = useState(0)
+  
+
+  const userId  = localStorage.getItem('userId')
+  
   const showProduct = numericProductId !== undefined
   ? products.find((p:any) => p.id === numericProductId)
   : undefined;
-
-  const userId  = localStorage.getItem('userId')
-
-
+  
   const product: IProduct = {
-    id: '65b0f7828e640ffac81f3e99',
+    id: showProduct.id,
     name: showProduct.title,
     rating: 4,
     reviewCount: 89,
@@ -100,20 +108,26 @@ const ProductDetailsPage = ({products}:any) => {
     setTabValue(newValue);
   };
 
+  useEffect(()=>{
+
+    setTotalPrice(cartItems ? cartItems.reduce( (acc , item ) => acc + (item.price * item.quantity) , 0) : 0)
+console.log('cartItems' , cartItems)
+  },[cartItems])
+
 
   useEffect(()=>{
 
     axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
   .then(response => {
 
-    response.data.map((item : any) =>{
-      console.log(item.productId)
-
-        if(item.productId == product.id){
-          setIsAdded(true)
-          return
-        }
-    })
+      setCartItems(response.data.products || [] )
+      
+      response.data?.products.map((item : ICartItem) =>{
+          if(item.id == product.id){
+            setIsAdded(true)
+            return
+          }
+      })
   })
   .catch(error => {
     console.error('Error:', error);
@@ -124,23 +138,38 @@ const ProductDetailsPage = ({products}:any) => {
 
   const handleAddToCart = (product: IProduct) => {
 
+
+    
     if(isAdded ){
       setCartVisible(true);
       return 
     }
     try {
+
     axios.post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`, 
     {
       "product" :  {
-         "productId": product.id,
-         "name": product.name,
+         "id": product.id,
+         "title": product.name,
           "price": product.price,
+          "imageUrl": product.images[0],
           "quantity": quantity
         }
     }
     )
     .then((res)=>{
       setCartVisible(true); 
+      setCartItems([ 
+        {
+        "id": product.id,
+        "name": product.name,
+         "price": product.price,
+         "imageUrl": product.images[0],
+         "quantity": quantity
+       }
+      ,
+      ...cartItems])
+     
     }) 
     .catch(err=>{
       alert(err.message)
@@ -154,16 +183,19 @@ const ProductDetailsPage = ({products}:any) => {
 
   };
 
-  const updateCartItemQuantity = (productId: string, newQuantity: number) => {
+  
+  const updateCartItemQuantity = (productId: number, newQuantity: number) => {
     setCartItems((prevItems) => {
       return prevItems
         .map((item) =>
-          item.product.id === productId
+          item.id === productId
             ? { ...item, quantity: newQuantity }
             : item
         )
         .filter((item) => item.quantity > 0); // Remove items with 0 quantity
     });
+
+
   };
 
   return (
@@ -195,6 +227,8 @@ const ProductDetailsPage = ({products}:any) => {
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               ${product.price.toFixed(2)}
             </Typography>
+
+
             <Typography sx={{ color: "text.secondary" }}>
               Save{" "}
               {(
@@ -202,7 +236,10 @@ const ProductDetailsPage = ({products}:any) => {
                   product.originalPrice) *
                 100
               ).toFixed(2)}
+
               % (${(product.originalPrice - product.price).toFixed(2)})
+
+
             </Typography>
           </Box>
           <Typography variant="subtitle1">
@@ -348,7 +385,7 @@ const ProductDetailsPage = ({products}:any) => {
               startIcon={<ShoppingCartIcon />}
               sx={{ flexGrow: 1, borderColor: "black", color: "black" }}
             >
-             {!isAdded ? 'ADD TO CART' : 'Alraedy Added'}
+             {!isAdded ? 'ADD TO CART' : 'Already Added'}
             </Button>
 
             <Button
@@ -404,12 +441,16 @@ const ProductDetailsPage = ({products}:any) => {
         </Box>
       </Box>
 
+
       <CartDrawer
         cartVisible={cartVisible}
         setCartVisible={setCartVisible}
         cartItems={cartItems}
         updateCartItemQuantity={updateCartItemQuantity}
+        totalPrice={totalPrice}
       />
+
+
       <Footer />
     </>
   );
