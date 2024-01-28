@@ -10,7 +10,6 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-// import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
@@ -32,6 +31,7 @@ const Checkout  = () => {
   const currency = "usd"
 
   const {cartList , totalPrice} = useSelector(state => state.cart )
+console.log('cartList --------- ' , cartList)
   
   
   useEffect(()=>{
@@ -237,26 +237,42 @@ const Checkout  = () => {
 
             <div style={{ width: "50%" }}>
 
-          {cartList.map((item)=>{
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {cartList.map((item)=>
+            (
+              <div style={{ display: "flex", alignItems: "center", gap: 14  , marginTop : "10px"}}>
 
-                <img
+                {/* <img
                   src="https://cdn.shopify.com/s/files/1/0811/4713/4258/files/product-2_81c1b7c5-321b-4d77-ae0c-cdcb436bcbc9_64x64.png?v=1692248380"
                   alt="cart"
                   style={{ height: "100%" }}
+                /> */}
+                <img
+                  src={item.imageUrl}
+                  alt="cart"
+                  style={{ height: "10%" , width : "10%" }}
                 />
 
                   <div>
                     <h3
                       style={{ fontSize: "1.4rem", fontWeight: 500, margin: 0 }}
                     >
-                      Pure Cotton T-Shirt
+                      {item.title}
                     </h3>
-                    <small>Beige / XS</small>
+
+                    {/* <small>Beige / XS</small> */}
+
+                    <h3
+                      style={{ fontSize: "1rem", fontWeight: 400, margin: 5 }}
+                    >
+                    Price :  ${item.price}
+                    <br/>
+                    Quantity :  {item.quantity}
+                    </h3>
+
                   </div>
 
               </div>
-          })}
+          ))}
 
               <div
                 style={{
