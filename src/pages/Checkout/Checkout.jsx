@@ -31,7 +31,6 @@ const Checkout  = () => {
   const currency = "usd"
 
   const {cartList , totalPrice} = useSelector(state => state.cart )
-console.log('cartList --------- ' , cartList)
   
   
   useEffect(()=>{

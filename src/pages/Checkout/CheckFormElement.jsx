@@ -92,7 +92,7 @@ useEffect(() => {
             email : 'vikashvermacom92@gmail.com',
             address:{
               city : 'Bhopal',
-              country : 'US',
+              country : 'india',
               line1 : 'd15 patel nagar',
               line2 : '462022',
               state : 'MP'
