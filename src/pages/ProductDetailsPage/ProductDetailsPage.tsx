@@ -33,6 +33,9 @@ import CartDrawer from "../../components/CartDrawer/CartDrawer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { addItemToCart, setCartVisible, updateQuantity } from "../../Redux/Slices/cart.slice";
 
 
 const ProductDetailsPage = ({products}:any) => {
@@ -44,40 +47,35 @@ const ProductDetailsPage = ({products}:any) => {
   const [quantity, setQuantity] = useState(0);
   const [selectedSize, setSelectedSize] = useState("S");
   const [tabValue, setTabValue] = React.useState(0);
-  const [cartVisible, setCartVisible] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
 
-  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   
   const { productId } = useParams<{ productId: string }>();
 
   const numericProductId = productId ? parseInt(productId, 10) : undefined;
 
+  const {cartList } = useSelector((state : RootState) => state.cart )  
   
-  const [totalPrice , setTotalPrice]   = useState(0)
-  
-
-  const userId  = localStorage.getItem('userId')
-  
-  const showProduct = numericProductId !== undefined
+  const cartProduct : ICartItem  = numericProductId !== undefined
   ? products.find((p:any) => p.id === numericProductId)
   : undefined;
   
   const product: IProduct = {
-    id: showProduct.id,
-    name: showProduct.title,
+    id: cartProduct.id,
+    name: cartProduct.name,
     rating: 4,
     reviewCount: 89,
-    price: showProduct.price,
+    price: cartProduct.price,
     originalPrice: 60.0,
     stock: 5,
     delivery: "2-3 Days",
-    images: [showProduct.imageUrl, product24Image, product26Image],
+    images: [cartProduct.imageUrl, product24Image, product26Image],
     colors: ["#f4ecc2"],
     sizes: ["S", "M", "L", "XL"],
   };
-
+  
   const handleSizeChange = (
     event: React.MouseEvent<HTMLElement>,
     newSize: string | null
@@ -107,99 +105,32 @@ const ProductDetailsPage = ({products}:any) => {
     setTabValue(newValue);
   };
 
-  useEffect(()=>{
 
-    setTotalPrice(cartItems ? cartItems.reduce( (acc , item ) => acc + (item.price * item.quantity) , 0) : 0)
-// console.log('cartItems' , cartItems)
-  },[cartItems])
+  
+  useEffect(()=>{ 
 
-
-  useEffect(()=>{
-
-    axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
-  .then(response => {
-
-      setCartItems(response.data.products || [] )
+    cartList.map((item : ICartItem) =>{
+                 if(item.id == product.id){
+                   setIsAdded(true);
+                   setQuantity(item.quantity)
+                   return
+                 }
+             })
       
-      response.data?.products.map((item : ICartItem) =>{
-          if(item.id == product.id){
-            setIsAdded(true);
-            setQuantity(item.quantity)
-            return
-          }
-      })
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
 
    },[])
 
 
-  const handleAddToCart = (product: IProduct) => {
+  const handleAddToCart = () => {
 
-
-    const data = {
-      "id": product.id,
-      "title": product.name,
-       "price": product.price,
-       "imageUrl": product.images[0],
-        quantity
+    if(!isAdded ){
+     setIsAdded(true)
+     dispatch( addItemToCart( {...cartProduct , quantity : quantity == 0 ? 1 : quantity} ) )
     }
-    
-    if(isAdded ){
-      setCartVisible(true);
-      return 
+    else{
+        dispatch(updateQuantity({productId : cartProduct.id, newQuantity : quantity}));
     }
-    try {
-
-    axios.post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`,      {product : data}    )
-
-    .then((res)=>{
-      setCartVisible(true); 
-
-      setCartItems([  {
-      "id": product.id,
-      "name": product.name,
-       "price": product.price,
-       "imageUrl": product.images[0],
-        quantity
-    }  ,     ...cartItems])
-    }) 
-    .catch(err=>{
-      alert(err.message)
-    })
-  }
-  catch(err:any){
-    alert(err.message)
-  }
-
-
-
-  };
-
-  
-  const updateCartItemQuantity = (productId: number, newQuantity: number) => {
-
-    setCartItems((prevItems) => {
-      return prevItems
-        .map((item) =>
-          item.id === productId
-            ? { ...item, quantity: newQuantity }
-            : item
-        )
-        .filter((item) => item.quantity > 0); // Remove items with 0 quantity
-    });
-
-
-    axios.post(`${BASE_URL}/cart/updateCartItemQuantity?userId=${userId}`, {productId, newQuantity}    )
-    .then((res)=>{
-      // console.log( 'res.data ' , res.data)
-    })
-     .catch((err)=>{
-    alert(err.message)
-     })
-
+    dispatch(setCartVisible(true));
   };
 
   return (
@@ -384,12 +315,12 @@ const ProductDetailsPage = ({products}:any) => {
           <Stack direction="row" spacing={2} sx={{ my: 2 }}>
             
             <Button
-              onClick={() => handleAddToCart(product)}
+              onClick={() => handleAddToCart()}
               variant="outlined"
               startIcon={<ShoppingCartIcon />}
               sx={{ flexGrow: 1, borderColor: "black", color: "black" }}
             >
-             {!isAdded ? 'ADD TO CART' : 'Already Added'}
+             {!isAdded ? 'ADD TO CART' : 'View Cart'}
             </Button>
 
             <Button
@@ -447,11 +378,7 @@ const ProductDetailsPage = ({products}:any) => {
 
 
       <CartDrawer
-        cartVisible={cartVisible}
-        setCartVisible={setCartVisible}
-        cartItems={cartItems}
-        updateCartItemQuantity={updateCartItemQuantity}
-        totalPrice={totalPrice}
+       setQuantity={setQuantity}
       />
 
       <Footer />

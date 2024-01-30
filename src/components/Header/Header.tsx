@@ -11,7 +11,7 @@ import {
 import { ShoppingCart, Search, AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { changeCartVisible } from "../../Redux/Slices/cart.slice";
+import {  setCartVisible } from "../../Redux/Slices/cart.slice";
 
 const Header: React.FC = () => {
   const cartItemCount = 0;
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
             component={Link}
             to="#"
             sx={{ color: "black" }}
-            onClick={ ()=> dispatch(changeCartVisible())}
+            onClick={ ()=> dispatch(setCartVisible(true))}
           >
             <Badge badgeContent={cartItemCount} color="secondary">
               <ShoppingCart />

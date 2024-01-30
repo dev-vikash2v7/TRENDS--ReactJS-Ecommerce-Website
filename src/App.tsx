@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage/HomePage"; // Adjust the import path as necessary
 import LoginPage from "./pages/LoginPage"; // Adjust the import path as necessary
@@ -13,54 +13,61 @@ import product5Image from "./assets/images/product-5.jpg";
 import product6Image from "./assets/images/product-6.jpg";
 import product7Image from "./assets/images/product-7.jpg";
 import product8Image from "./assets/images/product-8.jpg";
+import axios from "axios";
+import { BASE_URL } from "./config";
+import { useDispatch, useSelector } from "react-redux";
+import { setCartList } from "./Redux/Slices/cart.slice";
+import CartDrawer from "./components/CartDrawer/CartDrawer";
+
+import { RootState } from "./Redux/store";
 
 const products = [
   {
     id: 1,
-    title: "PURE COTTON T-SHIRT",
+    name: "PURE COTTON T-SHIRT",
     imageUrl: product1Image,
     price: 48.0,
   },
   {
     id: 2,
-    title: "OVERSIZED TEE - PEARL PINK",
+    name: "OVERSIZED TEE - PEARL PINK",
     imageUrl: product2Image,
     price: 40.0,
   },
   {
     id: 3,
-    title: "OVERSIZED TEE - BLACK",
+    name: "OVERSIZED TEE - BLACK",
     imageUrl: blackImage,
     price: 59.0,
   },
   {
     id: 4,
-    title: "LOOSE FIT CREW-NECK T-SHIRT",
+    name: "LOOSE FIT CREW-NECK T-SHIRT",
     imageUrl: lastImage,
     price: 75.0,
   },
 
   {
     id: 5,
-    title: "FULL-SLEEVE HOODED T-SHIRT",
+    name: "FULL-SLEEVE HOODED T-SHIRT",
     imageUrl: product5Image,
     price: 79.0,
   },
   {
     id: 6,
-    title: "STYLISH FIT HOODIE FOR MEN",
+    name: "STYLISH FIT HOODIE FOR MEN",
     imageUrl: product6Image,
     price: 50.0,
   },
   {
     id: 7,
-    title: "MEN FULL SLEEVE SWEATSHIRT",
+    name: "MEN FULL SLEEVE SWEATSHIRT",
     imageUrl: product8Image,
     price: 40.0,
   },
   {
     id: 8,
-    title: "BONO - PLAIN MEN'S HOODIE",
+    name: "BONO - PLAIN MEN'S HOODIE",
     imageUrl: product7Image,
     price: 60.0,
   },
@@ -68,9 +75,27 @@ const products = [
 
 const App: React.FC = () => {
 
-  
+  const dispatch = useDispatch()
 
-  const accessToken = localStorage.getItem("accessToken")
+  const {userId , accessToken} = useSelector((state : RootState) => state.user?.currentUser)
+
+  const {cartList } = useSelector((state : RootState) => state.cart )
+
+  useEffect(()=>{
+
+    if(userId && cartList.length == 0){
+         axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
+                 .then((response : any) => {
+                  dispatch(setCartList({products :  response.data.products , userId }))
+          })
+          .catch((error : any) => {
+            console.error('Error:', error);
+            alert('Your Internet Connection Is Not Good.')
+          });
+        }
+   },[])
+
+
     if(!accessToken){
       return (
       <Router>
@@ -91,6 +116,8 @@ const App: React.FC = () => {
         <Route path="/product/:productId" element={<ProductDetailsPage products = {products} />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
+
+      <CartDrawer      />
     </Router>
     )
 };

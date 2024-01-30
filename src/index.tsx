@@ -7,16 +7,19 @@ import reportWebVitals from "./reportWebVitals";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Provider } from "react-redux";
-import store from "./Redux/store";
+import { PersistGate } from 'redux-persist/integration/react'
+import { store  ,persister} from "./Redux/store";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
     <Provider store={store}>
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+       <PersistGate loading={null} persistor={persister}>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+       </PersistGate>
     </Provider>
 );
 

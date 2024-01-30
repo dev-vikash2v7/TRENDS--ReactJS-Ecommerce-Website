@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -26,23 +26,21 @@ import product8Image from "../../assets/images/product-8.jpg";
 import Slider, { CustomArrowProps } from "react-slick";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { useNavigate } from "react-router-dom";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProductDetailsPage from "../ProductDetailsPage/ProductDetailsPage";
-import { Link } from 'react-router-dom';
 
 interface HomePageProps {
   products: {
     id: number;
-    title: string;
+    name: string;
     imageUrl: string;
     price: number;
   }[];
 }
 
-
 const HomePage: React.FC<HomePageProps> = ({ products }) => {
+
   const [selectedTab, setSelectedTab] = useState(0);
 
+ 
   // Carousel settings
   const settings = {
     dots: false,
@@ -74,6 +72,8 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
 
   
 
+
+
   const specialTrendProducts = [
     { id: 1, title: "Shirt 1", imageUrl: product1Image, price: 250.0 },
     { id: 2, title: "Shirt 2", imageUrl: product2Image, price: 150.0 },
@@ -82,7 +82,7 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
   ];
 
   const handleAddToCart = (productId: number) => {
-    console.log(`Product ${productId} added to cart.`);
+    // console.log(`Product ${productId} added to cart.`);
     // Implement add to cart functionality
     
   };
@@ -204,7 +204,7 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
               >
               <ProductCard
                 imageUrl={product.imageUrl}
-                title={product.title}
+                title={product.name}
                 price={product.price}
                 onAddToCart={() => handleAddToCart(product.id)}
               />

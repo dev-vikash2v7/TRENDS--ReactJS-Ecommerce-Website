@@ -8,8 +8,6 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemAvatar,
-  ListItemText,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,64 +16,42 @@ import { ICartItem } from "../../types/types";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios"
-import { BASE_URL } from "../../config";
-import demoImage from "../../assets/images/product-2-6.jpg"
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { json } from "stream/consumers";
-import { setCartList } from "../../Redux/Slices/cart.slice";
+import {  setCartVisible, updateQuantity } from "../../Redux/Slices/cart.slice";
 
-interface ICartDrawerProps {
-  cartVisible: boolean;
-  setCartVisible: (visible: boolean) => void;
-  cartItems: ICartItem[];
-  updateCartItemQuantity: (productId: number, quantity: number) => void;
-  totalPrice : number
+interface ICartDrawer {
+  setQuantity?  : (arg0: number ) => void
 }
 
-
-
-
-interface IcartUpatedItem{
-  id: string;
-  price: number;
-  quantity: number;
-  name: string;
-  images : string
-}
-
-
-const CartDrawer: React.FC<ICartDrawerProps> = ({
-  cartVisible,
-  setCartVisible,
-  cartItems,
-  updateCartItemQuantity,
-  totalPrice
-}) => {
+const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
   
-
+  
   const imageSize = {
     width: 100,
     height: 100,
   };
-
+  
+  
+  const {cartList , totalPrice , cartVisible} = useSelector((state :RootState)  => state.cart )
+  
   const handleQuantityChange = (productId: number, newQuantity: number) => {
-    updateCartItemQuantity(productId, newQuantity);
+    dispatch(updateQuantity({productId, newQuantity}));
+
+    if(setQuantity)
+    cartList.map((item)=>{
+      item.id == productId && setQuantity(newQuantity)
+    })
   };
-
+  
   const dispatch = useDispatch();
-
+  
   const navigate = useNavigate();
-
+  
   const handleCheckout = () => {
-    // Handle the checkout action
-    // localStorage.setItem('amount' , totalPrice.toString())
-
-    dispatch(setCartList( {cartList : cartItems, totalPrice , cartVisible : false}))
+    // Handle the checkout action 
+    dispatch(setCartVisible(false))   
     navigate(`/checkout` );
-
   };
 
 
@@ -83,7 +59,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
     <Drawer
       anchor="right"
       open={cartVisible}
-      onClose={() => setCartVisible(false)}
+      onClose={() => dispatch( setCartVisible(false))}
     >
       <Box
         sx={{
@@ -96,7 +72,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
         role="presentation"
       >
         <IconButton
-          onClick={() => setCartVisible(false)}
+          onClick={() =>  dispatch( setCartVisible(false))}
           sx={{ position: "absolute", top: 8, right: 8 }}
         >
           <CloseIcon />
@@ -108,7 +84,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
         <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
           <List>
 
-            {cartItems && cartItems?.map((item) => (
+            {cartList && cartList?.map((item : ICartItem) => (
 
               <ListItem key={item.id}>
                 <CardMedia
@@ -172,7 +148,7 @@ const CartDrawer: React.FC<ICartDrawerProps> = ({
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-            {/* ${totalPrice.toFixed(2)} USD */}
+            ${totalPrice.toFixed(2)} USD
           </Typography>
 
           <Typography variant="body2" sx={{ mb: 2 }}>

@@ -26,26 +26,30 @@ const LoginPage: React.FC = () => {
       password: password,
     };
 
+    try{
 
-    axios.post(`${BASE_URL}/user/login`, userData)
+      
+      axios.post(`${BASE_URL}/user/login`, userData)
       .then((response) => {
-
-
-        dispatch(setUser({userId :  response.data.userDetails._id , email : response.data.userDetails.email  } ))
 
         const { accessToken, refreshToken ,userDetails} = response.data;
 
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("userId", userDetails._id);
-        localStorage.setItem("email", userDetails.email);
-
-
-        window.location.href = "/";
-      })
+        dispatch(setUser({
+          userId :  userDetails._id ,
+          email : userDetails.email  ,
+          accessToken,
+           refreshToken
+          } ))
+          
+          window.location.href = "/";
+        })
       .catch((error) => {
         console.error("Login error:", error);
       });
+    }
+    catch(error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (

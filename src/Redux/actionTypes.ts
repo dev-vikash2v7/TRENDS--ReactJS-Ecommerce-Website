@@ -5,12 +5,14 @@ export const SET_USER = 'SET_USER';
 export const SET_CART = 'SET_CART';
 
 export interface User {
-  userId: string;
-  email: string;
+  userId: string | null;
+  email: string | null;
+  accessToken : string | null,
+  refreshToken : string | null
 }
 
 export interface UserState {
-    currentUser: User | null;
+    currentUser: User ;
   }
 
 interface SetUserAction {
@@ -19,12 +21,22 @@ interface SetUserAction {
 }
 
 
-
 export interface CartState {
   cartList: ICartItem[] | [];
   totalPrice: number | 0;
-  cartVisible : boolean | false
+  cartVisible : boolean | false,
+  userId : string | null,
+
 }
+
+export interface IUpdateQuantity {
+  productId: number ;
+  newQuantity : number ;
+}
+
+
+
+
 
 interface SetCartAction {
   type: typeof SET_CART;

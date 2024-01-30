@@ -77,9 +77,7 @@ const Checkout  = () => {
             <div style={{ fontSize: "2.4rem", fontWeight: "bold" }}>
               Contact
             </div>
-            <div>
-              Have an Account <Link to="/login">Login</Link>
-            </div>
+           
           </div>
           <TextField
             id="outlined-basic"

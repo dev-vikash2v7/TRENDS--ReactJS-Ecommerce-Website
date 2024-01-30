@@ -5,7 +5,12 @@ import { UserState, User } from '../actionTypes';
 
 
 const initialState: UserState = {
-  currentUser: null,
+  currentUser: {
+    userId : '',
+    email : '',
+    refreshToken : '',
+    accessToken : '',
+  },
 };
 
 const AuthSlice = createSlice({
@@ -15,8 +20,6 @@ const AuthSlice = createSlice({
 
     reducers: {
       setUser : (state  , action : PayloadAction<User>) => {
-        //   AsyncStorage.setItem('user_'+action.payload?.id, JSON.stringify(action.payload));
-        console.log(action.payload)
           state.currentUser = action.payload;
       },
     }
