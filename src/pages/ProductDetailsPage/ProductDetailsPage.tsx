@@ -133,6 +133,7 @@ const ProductDetailsPage = ({products}:any) => {
     dispatch(setCartVisible(true));
   };
 
+  
   return (
     <>
       <Header />
@@ -268,7 +269,7 @@ const ProductDetailsPage = ({products}:any) => {
               alignItems: "center",
             }}
           >
-            <Typography
+            <Typography 
               variant="subtitle1"
               sx={{ minWidth: "fit-content", mr: 2 }}
             >
