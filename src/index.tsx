@@ -13,6 +13,15 @@ import { store  ,persister} from "./Redux/store";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+if (process.env.NODE_ENV === 'production') {
+  // Code specific to production environment
+  console.log('Running in production mode');
+} else {
+  // Code for development environment
+  console.log('Running in development mode');
+}
+
 root.render(
     <Provider store={store}>
        <PersistGate loading={null} persistor={persister}>
