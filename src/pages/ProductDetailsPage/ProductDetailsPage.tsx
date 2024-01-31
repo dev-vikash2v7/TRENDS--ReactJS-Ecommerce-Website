@@ -133,6 +133,7 @@ const ProductDetailsPage = ({products}:any) => {
     dispatch(setCartVisible(true));
   };
 
+  
   return (
     <>
       <Header />
