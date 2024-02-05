@@ -1,17 +1,16 @@
 // PaymentPage.js
 
 import { CheckCircleRounded } from '@mui/icons-material';
-import React from 'react';
 
-const PaymentPage = () => {
+const OrderSucces = () => {
 
 
   return (
     <div>
-      <h1>Payment Success</h1>
+      <h1 style={{textAlign : 'center' , fontWeight : '600'  , fontSize : '14px' , marginTop : '10px'}}>Payment Success</h1>
         <CheckCircleRounded />
     </div>
   );
 };
 
-export default PaymentPage;
+export default OrderSucces;

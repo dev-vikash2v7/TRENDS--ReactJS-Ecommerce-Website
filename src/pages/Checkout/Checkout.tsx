@@ -18,6 +18,7 @@ import axios from "axios";
 import { BASE_URL } from "../../config";
 import CheckFormElement from "./CheckFormElement";
 import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 
 const stripePromise = loadStripe(
   "pk_test_51OcOelSJbNHwzu2iaWHv6Pyeqbt8rMJzFPjWtuSatm8FLnJQOs2GR1lql3A7OYyu1s7oMX9wYN76xp9ZE4gFw8L300fyK85med"
@@ -30,7 +31,7 @@ const Checkout  = () => {
 
   const currency = "usd"
 
-  const {cartList , totalPrice} = useSelector(state => state.cart )
+  const {cartList , totalPrice} = useSelector((state : RootState) => state.cart )
   
   
   useEffect(()=>{
@@ -55,7 +56,6 @@ const Checkout  = () => {
   };
   const options = {
     clientSecret,
-    appearance,
   };
 
 
@@ -213,7 +213,7 @@ const Checkout  = () => {
 
           {/* <CheckoutForm /> */}
    {    clientSecret && <Elements options={options} stripe={stripePromise}>
-            <CheckFormElement clientSecret = {clientSecret}/>
+            <CheckFormElement />
           </Elements>}
           {/* </Elements> */}
   
@@ -253,7 +253,7 @@ const Checkout  = () => {
                     <h3
                       style={{ fontSize: "1.4rem", fontWeight: 500, margin: 0 }}
                     >
-                      {item.title}
+                      {item.name}
                     </h3>
 
                     {/* <small>Beige / XS</small> */}

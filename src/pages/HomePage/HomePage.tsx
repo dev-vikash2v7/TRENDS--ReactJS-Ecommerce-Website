@@ -111,7 +111,8 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
               justifyContent: "center",
               backgroundImage: `url(${trendySkirtsImage})`,
               backgroundSize: "cover",
-              height: 800,
+              height: 700,
+
             }}
           />
           <Box
@@ -122,7 +123,7 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
               justifyContent: "center",
               backgroundImage: `url(${trendySkirtsImage})`,
               backgroundSize: "cover",
-              height: 800,
+              height: 700,
             }}
           />
         </Slider>

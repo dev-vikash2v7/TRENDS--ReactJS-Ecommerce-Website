@@ -25,7 +25,6 @@ export interface CartState {
   cartList: ICartItem[] | [];
   totalPrice: number | 0;
   cartVisible : boolean | false,
-  userId : string | null,
 
 }
 

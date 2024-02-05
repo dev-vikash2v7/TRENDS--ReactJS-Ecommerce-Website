@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
 import {  setCartVisible, updateQuantity } from "../../Redux/Slices/cart.slice";
+import axios from "axios";
+import { BASE_URL } from "../../config";
 
 interface ICartDrawer {
   setQuantity?  : (arg0: number ) => void
@@ -34,14 +36,27 @@ const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
   
   
   const {cartList , totalPrice , cartVisible} = useSelector((state :RootState)  => state.cart )
+  const userId = useSelector((state :RootState)  => state.user.currentUser.userId )
   
-  const handleQuantityChange = (productId: number, newQuantity: number) => {
-    dispatch(updateQuantity({productId, newQuantity}));
 
-    if(setQuantity)
-    cartList.map((item)=>{
-      item.id == productId && setQuantity(newQuantity)
+
+  const handleQuantityChange = (productId: number, newQuantity: number) => {
+
+    dispatch(updateQuantity({productId, newQuantity}));
+    
+    axios.post(`${BASE_URL}/cart/updateCartItemQuantity?userId=${userId}`, {productId, newQuantity}    )
+
+    .then(()=>{
+
+      if(setQuantity)
+      cartList.map((item)=>{
+        item.id == productId && setQuantity(newQuantity)
+      })
+
     })
+     .catch((err)=>{
+    alert(err.message)
+     })
   };
   
   const dispatch = useDispatch();
@@ -102,6 +117,7 @@ const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
                   <Typography variant="subtitle1">
                     {item.name}
                   </Typography>
+
                   <Typography variant="body2">
                     Price: ${item.price.toFixed(2)}
                   </Typography>
@@ -114,6 +130,8 @@ const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
                     >
                       <RemoveIcon />
                     </IconButton>
+
+
                     <TextField
                       size="small"
                       value={item.quantity}
@@ -124,8 +142,10 @@ const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
                         )
                       }
                       inputProps={{ style: { textAlign: "center" }, min: 1 }}
-                      sx={{ maxWidth: 40, mx: 1 }}
+                      sx={{ maxWidth: 60, mx: 1 }}
                     />
+
+
                     <IconButton
                       size="small"
                       onClick={() =>
@@ -148,7 +168,7 @@ const CartDrawer : React.FC<ICartDrawer> = ({setQuantity})   => {
           </Typography>
 
           <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-            ${totalPrice.toFixed(2)} USD
+            ${totalPrice && totalPrice.toFixed(2)} USD
           </Typography>
 
           <Typography variant="body2" sx={{ mb: 2 }}>

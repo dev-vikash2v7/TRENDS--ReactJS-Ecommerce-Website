@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { CardElement, useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
-import { BASE_URL } from "../../config";
+import {  useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import {
     Button,
   } from "@mui/material";
+import { BASE_URL } from "../../config";
 
 
 const CheckFormElement = () => {
@@ -25,8 +25,6 @@ const CheckFormElement = () => {
       "payment_intent_client_secret"
     );
     
-    // console.log('cs' , clientSecret)
-
     if (!clientSecret) {
       return;
     }
@@ -34,7 +32,7 @@ const CheckFormElement = () => {
 
     stripe?.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
 
-      switch (paymentIntent.status) {
+      switch (paymentIntent?.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
           break;
@@ -64,7 +62,7 @@ useEffect(() => {
 
 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e : any) => {
     e.preventDefault();
 
     
@@ -83,7 +81,7 @@ useEffect(() => {
 
       confirmParams: {
 
-        return_url: "http://localhost:3000",
+        return_url: `${BASE_URL}/order-success`,
 
         payment_method_data: {
           billing_details: {
@@ -103,14 +101,13 @@ useEffect(() => {
     
     });
 
-    console.log('error83 ' , error)
 
-if(error ){
-    setMessage(error.message);
-    setIsLoading(false);
-    setError(true)
-    return
-  }
+    if(error){
+        setMessage(error.message ? error.message : '');
+        setIsLoading(false);
+        setError(true)
+        return
+      }
 
     setIsLoading(false);
   };

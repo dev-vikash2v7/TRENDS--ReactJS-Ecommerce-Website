@@ -20,6 +20,7 @@ import { setCartList } from "./Redux/Slices/cart.slice";
 import CartDrawer from "./components/CartDrawer/CartDrawer";
 
 import { RootState } from "./Redux/store";
+import OrderSucces from "./pages/Checkout/OrderSuccess";
 
 const products = [
   {
@@ -78,7 +79,6 @@ const App: React.FC = () => {
   const dispatch = useDispatch()
 
   const {userId , accessToken} = useSelector((state : RootState) => state.user?.currentUser)
-
   const {cartList } = useSelector((state : RootState) => state.cart )
 
   useEffect(()=>{
@@ -86,7 +86,7 @@ const App: React.FC = () => {
     if(userId && cartList.length == 0){
          axios.get(`${BASE_URL}/cart/getUserCart?userId=${userId}`)
                  .then((response : any) => {
-                  dispatch(setCartList({products :  response.data.products , userId }))
+                  dispatch(setCartList({products :  response.data.products  }))
           })
           .catch((error : any) => {
             console.error('Error:', error);
@@ -115,6 +115,7 @@ const App: React.FC = () => {
         <Route path="/signup" element={<SignUpPage />} /> */}
         <Route path="/product/:productId" element={<ProductDetailsPage products = {products} />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSucces />} />
       </Routes>
 
       <CartDrawer      />

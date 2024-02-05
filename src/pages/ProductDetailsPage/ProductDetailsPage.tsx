@@ -35,7 +35,7 @@ import axios from "axios";
 import { BASE_URL } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { addItemToCart, setCartVisible, updateQuantity } from "../../Redux/Slices/cart.slice";
+import { addItemToCart, removeItemFromCart, setCartVisible, updateQuantity } from "../../Redux/Slices/cart.slice";
 
 
 const ProductDetailsPage = ({products}:any) => {
@@ -57,6 +57,7 @@ const ProductDetailsPage = ({products}:any) => {
   const numericProductId = productId ? parseInt(productId, 10) : undefined;
 
   const {cartList } = useSelector((state : RootState) => state.cart )  
+  const userId = useSelector((state : RootState) => state.user.currentUser.userId )  
   
   const cartProduct : ICartItem  = numericProductId !== undefined
   ? products.find((p:any) => p.id === numericProductId)
@@ -85,6 +86,10 @@ const ProductDetailsPage = ({products}:any) => {
     }
   };
 
+  // useEffect(()=>{
+  //   dispatch(updateQuantity({productId :product.id, newQuantity : quantity}))
+  // },[quantity])
+
   const handleSelectImage = (imagePath: string) => {
     setSelectedImage(imagePath);
   };
@@ -94,12 +99,27 @@ const ProductDetailsPage = ({products}:any) => {
   };
 
   const handleIncrement = () => {
+    if(quantity == 0){
+      setIsAdded(true)
+      handleAddToCart()
+    }
     setQuantity((prevQuantity) => prevQuantity + 1);
+    dispatch(updateQuantity({productId :product.id, newQuantity : quantity}))
   };
 
+
   const handleDecrement = () => {
-    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+    if(quantity <= 0 ) return 
+
+    if(quantity == 1){
+      setIsAdded(false)
+      setQuantity(0)
+      dispatch(removeItemFromCart(cartProduct))
+    }
+    else
+      setQuantity((prevQuantity) => prevQuantity - 1);
   };
+
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -116,21 +136,28 @@ const ProductDetailsPage = ({products}:any) => {
                    return
                  }
              })
-      
-
-   },[])
+   },[cartList])
 
 
   const handleAddToCart = () => {
 
-    if(!isAdded ){
-     setIsAdded(true)
-     dispatch( addItemToCart( {...cartProduct , quantity : quantity == 0 ? 1 : quantity} ) )
+    if(!isAdded || cartProduct.quantity == 0){
+      axios.post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`,      {product : cartProduct }    )
+      .then(()=>{
+        setIsAdded(true)
+        const newQ = quantity == 0 ? 1 : quantity ;
+        setQuantity(newQ)
+        dispatch( addItemToCart( {...cartProduct , quantity : newQ }  ) )
+        dispatch(setCartVisible(true));
+      }) 
+      .catch(err=>{
+        alert(err.message)
+        return
+      })
     }
     else{
-        dispatch(updateQuantity({productId : cartProduct.id, newQuantity : quantity}));
+        dispatch(setCartVisible(true));
     }
-    dispatch(setCartVisible(true));
   };
 
   

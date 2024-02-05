@@ -14,12 +14,10 @@ const initialState: CartState = {
   cartList: [],
   totalPrice: 0,
   cartVisible : false,
-  userId : null
 };
 
 interface ISetCart {
  products : ICartItem[],
- userId : string
 }
 
 const CartSlice = createSlice({
@@ -32,7 +30,6 @@ const CartSlice = createSlice({
 
       setCartList : (state , action : PayloadAction<ISetCart> ) => {
           state.cartList = action.payload.products
-          state.userId = action.payload.userId
           state.totalPrice =  state.cartList.reduce( (acc , item ) => acc + (item.price * item.quantity) , 0) 
       },
 
@@ -44,38 +41,25 @@ const CartSlice = createSlice({
 
 
       addItemToCart : (state , action: PayloadAction<ICartItem> ) =>{
-        try {
-
+      
           const cartItem  = action.payload
-        
-          axios.post(`${BASE_URL}/cart/addToUserCart?userId=${state.userId}`,      {product : cartItem }    )
-          .then(res =>{
-
-          }) 
-          .catch(err=>{
-            alert(err.message)
-            return
-          })
-          state.cartVisible = true; 
           state.cartList = [  cartItem  ,     ...state.cartList]
           state.totalPrice +=  cartItem.price * cartItem.quantity
-        }
-        catch(err:any){
-          alert(err.message)
-        }
+       
+      },
+
+      removeItemFromCart : (state , action: PayloadAction<ICartItem> ) =>{
+      
+           const cartItem  = action.payload
+          state.cartList = state.cartList.filter(item => item.id !== cartItem.id)
+          state.totalPrice -=  cartItem.price * cartItem.quantity
+       
       },
 
 
   updateQuantity : (state , action: PayloadAction<IUpdateQuantity> ) =>{
 
     const {productId , newQuantity} = action.payload 
-
-    axios.post(`${BASE_URL}/cart/updateCartItemQuantity?userId=${state.userId}`, {productId, newQuantity}    )
-    .then()
-     .catch((err)=>{
-    alert(err.message)
-    return
-     })
 
     const itemIndex = state.cartList.findIndex(item => item.id === productId);
 
@@ -95,6 +79,6 @@ const CartSlice = createSlice({
   }
   })
 
-export const {setCartList , setCartVisible  ,addItemToCart ,updateQuantity} = CartSlice.actions;
+export const {setCartList , setCartVisible  ,addItemToCart ,updateQuantity , removeItemFromCart} = CartSlice.actions;
 
 export default CartSlice.reducer
