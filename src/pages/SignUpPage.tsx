@@ -17,11 +17,18 @@ import {
 import backgroundImage from "../assets/images/background-image.jpg"; // Adjust the relative path as needed
 import axios from "axios";
 import { BASE_URL } from "../config";
+import { useSelector } from "react-redux";
+import { RootState } from "../Redux/store";
 
 const SignUpPage: React.FC = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { accessToken} = useSelector((state : RootState) => state.user?.currentUser)
+  
+  if(accessToken) window.location.href = '/'
+
 
   const handleRegister = () => {
     if (!email || !password) {

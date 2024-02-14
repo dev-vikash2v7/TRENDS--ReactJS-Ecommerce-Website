@@ -96,25 +96,27 @@ const App: React.FC = () => {
    },[])
 
 
-    if(!accessToken){
-      return (
-      <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="*" element={<LoginPage />}  />
-      </Routes>
-    </Router>
-      )
-    }
+    // if(!accessToken){
+    //   return (
+    //   <Router>
+    //   <Routes>
+    //     <Route path="/login" element={<LoginPage />} />
+    //     <Route path="/signup" element={<SignUpPage />} />
+    //     <Route path="*" element={<LoginPage />}  />
+    //   </Routes>
+    // </Router>
+    //   )
+    // }
+
+
     return(
     <Router>
       <Routes>
         <Route path="/" element={<HomePage products = {products} />} />
-        {/* <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} /> */}
+         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} /> 
         <Route path="/product/:productId" element={<ProductDetailsPage products = {products} />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout" element={accessToken ?  <Checkout /> : <LoginPage/>} />
         <Route path="/order-success" element={<OrderSucces />} />
       </Routes>
 

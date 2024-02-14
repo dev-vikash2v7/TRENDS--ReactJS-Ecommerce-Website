@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
           <PaypalIcon />
         </Box> */}
         <Typography variant="body2" color="grey.A700" align="center" mt={2}>
-          © {new Date().getFullYear()} E-commerce Software by Prestashop™
+          © {new Date().getFullYear()} E-commerce Software by VikashKVerma
         </Typography>
       </Container>
     </Box>

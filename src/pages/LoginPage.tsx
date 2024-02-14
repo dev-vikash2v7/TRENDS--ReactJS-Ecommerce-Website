@@ -10,10 +10,15 @@ import {
 import backgroundImage from "../assets/images/background-image.jpg";
 import axios from "axios";
 import { BASE_URL } from "../config";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../Redux/Slices/user.slice";
+import { RootState } from "../Redux/store";
 
 const LoginPage: React.FC = () => {
+
+  const { accessToken} = useSelector((state : RootState) => state.user?.currentUser)
+  if(accessToken) window.location.href = '/'
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +56,8 @@ const LoginPage: React.FC = () => {
       console.error("Login error:", error);
     }
   };
+
+  
 
   return (
     <>

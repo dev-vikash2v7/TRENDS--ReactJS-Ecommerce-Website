@@ -30,7 +30,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { ICart, ICartItem, IProduct } from "../../types/types";
 import CartDrawer from "../../components/CartDrawer/CartDrawer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,8 +57,9 @@ const ProductDetailsPage = ({products}:any) => {
   const numericProductId = productId ? parseInt(productId, 10) : undefined;
 
   const {cartList } = useSelector((state : RootState) => state.cart )  
-  const userId = useSelector((state : RootState) => state.user.currentUser.userId )  
-  
+  const {userId , accessToken} = useSelector((state : RootState) => state.user.currentUser )  
+  const navigate = useNavigate();
+
   const cartProduct : ICartItem  = numericProductId !== undefined
   ? products.find((p:any) => p.id === numericProductId)
   : undefined;
@@ -99,6 +100,8 @@ const ProductDetailsPage = ({products}:any) => {
   };
 
   const handleIncrement = () => {
+    if(!accessToken) navigate('/login')
+
     if(quantity == 0){
       setIsAdded(true)
       handleAddToCart()
@@ -109,6 +112,8 @@ const ProductDetailsPage = ({products}:any) => {
 
 
   const handleDecrement = () => {
+  if(!accessToken) navigate('/login')
+
     if(quantity <= 0 ) return 
 
     if(quantity == 1){
@@ -140,6 +145,9 @@ const ProductDetailsPage = ({products}:any) => {
 
 
   const handleAddToCart = () => {
+
+    if(!accessToken) navigate('/login')
+
 
     if(!isAdded || cartProduct.quantity == 0){
       axios.post(`${BASE_URL}/cart/addToUserCart?userId=${userId}`,      {product : cartProduct }    )
@@ -354,6 +362,7 @@ const ProductDetailsPage = ({products}:any) => {
             <Button
               variant="contained"
               sx={{ flexGrow: 1, bgcolor: "black", color: "white" }}
+              onClick={()=> navigate('/checkout')}
             >
               BUY IT NOW
             </Button>

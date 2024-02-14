@@ -10,12 +10,14 @@ import {
 } from "@mui/material";
 import { ShoppingCart, Search, AccountCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {  setCartVisible } from "../../Redux/Slices/cart.slice";
+import { RootState } from "../../Redux/store";
 
 const Header: React.FC = () => {
   const cartItemCount = 0;
   const dispatch = useDispatch()
+  const {userId , accessToken} = useSelector((state : RootState) => state.user.currentUser )  
 
   return (
     <AppBar position="static" sx={{ background: "white", color: "black" }}>
@@ -32,7 +34,7 @@ const Header: React.FC = () => {
               fontWeight: "bold",
             }}
           >
-            ZÜREA
+            TRENDS
           </Typography>
         </Box>
         <Box sx={{ flex: 2, display: 'flex', justifyContent: 'center' }}>
@@ -77,12 +79,15 @@ const Header: React.FC = () => {
           <IconButton color="inherit" sx={{ color: "black" }}>
             <AccountCircle />
           </IconButton>
+
           <IconButton
             color="inherit"
             component={Link}
             to="#"
             sx={{ color: "black" }}
-            onClick={ ()=> dispatch(setCartVisible(true))}
+            onClick={ ()=> {
+              accessToken ?  dispatch(setCartVisible(true)) : window.location.href = '/login' 
+            }}
           >
             <Badge badgeContent={cartItemCount} color="secondary">
               <ShoppingCart />
