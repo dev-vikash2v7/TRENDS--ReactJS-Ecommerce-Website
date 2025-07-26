@@ -27,13 +27,16 @@ Trends is a modern and user-friendly e-commerce website built using the MERN sta
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/trends-ecommerce.git
-cd trends-ecommerce
+git clone https://github.com/dev-vikash2v7/TRENDS--ReactJS-Ecommerce-Website.git
+cd TRENDS--ReactJS-Ecommerce-Website
+```
 
-
-
-cd server
+2. Package Installation
+```bash
 npm install
+```
 
-cd ../client
-npm install
+3. Run website
+```bash
+npm start
+```
